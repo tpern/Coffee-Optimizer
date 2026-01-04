@@ -1,41 +1,157 @@
+/* --------------------
+   Base Reset
+-------------------- */
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: "Helvetica Neue", Arial, sans-serif;
-  background-color: #f5f5f5;
-  color: #333;
   margin: 0;
-  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI",
+    Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  background: #f6f3ef;
+  color: #2f2b26;
+  line-height: 1.5;
 }
 
-h1, h2 { text-align: center; }
+/* --------------------
+   Layout
+-------------------- */
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+}
 
-label { display: block; margin: 10px 0 5px; font-weight: bold; }
+/* --------------------
+   Typography
+-------------------- */
+h1 {
+  font-size: 1.9rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.01em;
+}
 
-select, input, textarea {
+h3 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: #3a352f;
+}
+
+label {
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+  display: block;
+  color: #4a443d;
+}
+
+/* --------------------
+   Sections & Cards
+-------------------- */
+.section {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1rem 1.1rem 1.2rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.25rem 1.3rem;
+  margin-top: 1.5rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* --------------------
+   Inputs
+-------------------- */
+select,
+input[type="date"],
+textarea {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 15px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-button {
-  padding: 10px 20px;
-  background-color: #6b4f4f;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-button:hover { background-color: #855f5f; }
-
-#result {
-  background-color: white;
-  padding: 15px;
+  padding: 0.55rem 0.65rem;
+  margin-bottom: 0.75rem;
   border-radius: 10px;
-  margin-top: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  white-space: pre-line;
+  border: 1px solid #d9d4cd;
+  background: #faf9f7;
+  font-size: 0.9rem;
+  color: #2f2b26;
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #a58d6f;
+  background: #ffffff;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 70px;
+}
+
+/* --------------------
+   Buttons
+-------------------- */
+button {
+  width: 100%;
+  background: #a58d6f;
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: #947a5f;
+}
+
+/* --------------------
+   Output Styling
+-------------------- */
+.card h3 {
+  margin-top: 0;
+}
+
+.card p {
+  margin: 0.35rem 0;
+}
+
+.card hr {
+  border: none;
+  border-top: 1px solid #eee9e3;
+  margin: 0.75rem 0;
+}
+
+/* --------------------
+   Mobile Optimization
+-------------------- */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .container {
+    padding: 1.25rem 1rem 2.5rem;
+  }
+
+  .section,
+  .card {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
 }

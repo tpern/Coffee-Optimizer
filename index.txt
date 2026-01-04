@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Coffee Brew Optimizer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="container">
+  <h1>Coffee Brew Optimizer</h1>
+
+  <!-- USER TYPE -->
+  <div class="section">
+    <label>Who is brewing?</label>
+    <select id="userType">
+      <option disabled selected value="">Select one</option>
+      <option value="home">Home Barista</option>
+      <option value="cafe">Café / Professional</option>
+    </select>
+  </div>
+
+  <!-- COFFEE DETAILS -->
+  <div class="section">
+    <h3>Coffee Details</h3>
+
+    <label>Origin</label>
+    <select id="origin">
+      <option>Kenya</option>
+      <option>Ethiopia</option>
+      <option>Colombia</option>
+      <option>Brazil</option>
+      <option>Guatemala</option>
+      <option>Panama</option>
+      <option>Costa Rica</option>
+      <option>Rwanda</option>
+      <option>Indonesia</option>
+      <option>Yemen</option>
+    </select>
+
+    <label>Altitude</label>
+    <select id="altitude">
+      <option>800–1200m</option>
+      <option>1200–1600m</option>
+      <option>1600–2000m</option>
+      <option>2000m+</option>
+    </select>
+
+    <label>Varietal</label>
+    <select id="varietal">
+      <option>Bourbon</option>
+      <option>Typica</option>
+      <option>SL28 / SL34</option>
+      <option>Geisha</option>
+      <option>Catuai</option>
+    </select>
+
+    <label>Roast Date</label>
+    <input type="date" id="roastDate" />
+  </div>
+
+  <!-- ROAST & PROCESS -->
+  <div class="section">
+    <label>Roast Level</label>
+    <select id="roast">
+      <option>Light</option>
+      <option>Medium</option>
+      <option>Dark</option>
+    </select>
+
+    <label>Processing Method</label>
+    <select id="process">
+      <option>Washed</option>
+      <option>Natural</option>
+      <option>Honey</option>
+      <option>Carbonic Maceration</option>
+      <option>Experimental</option>
+    </select>
+  </div>
+
+  <!-- BREW METHOD -->
+  <div class="section">
+    <label>Brew Method</label>
+    <select id="brewMethod">
+      <option>Espresso</option>
+      <option>V60</option>
+      <option>Chemex</option>
+      <option>Aeropress</option>
+      <option>French Press</option>
+      <option>Cold Brew</option>
+      <option>Batch Brew</option>
+    </select>
+  </div>
+
+  <!-- WATER -->
+  <div class="section">
+    <label>Water Type</label>
+    <select id="water">
+      <option>Tap</option>
+      <option>Filtered</option>
+      <option>Reverse Osmosis</option>
+      <option>Third Wave Water</option>
+      <option>Bottled Spring</option>
+    </select>
+  </div>
+
+  <!-- EQUIPMENT -->
+  <div class="section" id="equipmentSection" style="display:none;">
+    <label>Grinder</label>
+    <select id="grinder"></select>
+
+    <label>Espresso Machine</label>
+    <select id="espressoMachine"></select>
+  </div>
+
+  <!-- TASTE FEEDBACK -->
+  <div class="section">
+    <h3>Taste Feedback</h3>
+
+    <label>Sourness</label>
+    <select id="sour">
+      <option>Balanced</option>
+      <option>Too Sour</option>
+      <option>Flat</option>
+    </select>
+
+    <label>Bitterness</label>
+    <select id="bitter">
+      <option>Balanced</option>
+      <option>Too Bitter</option>
+      <option>Hollow</option>
+    </select>
+
+    <label>Notes (optional)</label>
+    <textarea id="notes"></textarea>
+  </div>
+
+  <button onclick="generateBrew()">Generate Brew</button>
+
+  <div class="card" id="output"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

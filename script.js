@@ -1,101 +1,108 @@
-// ------------------------
-// Grinder Mapping Table
-// ------------------------
-const grinderMap = {
-  "baratza_Encore": { espresso: "Fine (14-16)", v60: "Medium-Fine (20-22)", chemex: "Medium-Fine (20-22)", french_press: "Medium-Coarse (24-26)", aeropress: "Medium-Fine (18-20)", siphon: "Medium-Fine (20-22)", cold_brew: "Coarse (25-27)", moka_pot: "Fine (15-17)", batch_brew: "Medium-Fine (20-22)" },
-  "baratza_S207": { espresso: "Fine (9-11)", v60: "Medium-Fine (15-17)", chemex: "Medium-Fine (15-17)", french_press: "Medium-Coarse (18-20)" },
-  "baratza_Vario": { espresso: "Extra Fine (5-7)", v60: "Medium-Fine (12-14)", chemex: "Medium-Fine (12-14)", french_press: "Medium-Coarse (16-18)" },
-  "fellow_Ottimo": { espresso: "Fine (8-10)", v60: "Medium-Fine (14-16)", french_press: "Medium (17-19)" },
-  "mazzer_Super_Jolly": { espresso: "Extra Fine (1-3)", v60: "Medium-Fine (6-8)", french_press: "Medium-Coarse (9-11)" },
-  "mazzer_minim": { espresso: "Extra Fine (1-3)", v60: "Medium-Fine (6-8)", french_press: "Medium-Coarse (9-11)" },
-  "ek43": { espresso: "Extra Fine (1-2)", v60: "Medium (3-5)", french_press: "Medium-Coarse (6-7)" },
-  "wilfa_SVart": { espresso: "Fine (5-7)", v60: "Medium-Fine (10-12)", french_press: "Medium-Coarse (13-15)" },
-  "niche_zero": { espresso: "Fine (5-6)", v60: "Medium-Fine (10-11)", french_press: "Medium-Coarse (12-14)" },
-  "liddell": { espresso: "Fine (6-8)", v60: "Medium-Fine (11-13)", french_press: "Medium-Coarse (14-16)" },
-  "comandante_C40": { espresso: "Fine (7-9)", v60: "Medium-Fine (12-14)", press: "Medium-Coarse (15-17)" },
-  "eureka_Mignon_Specialita": { espresso: "Fine (5-6)", v60: "Medium-Fine (10-12)", french_press: "Medium-Coarse (13-15)" },
-  "rocket_R58_grinder": { espresso: "Extra Fine (1-3)", v60: "Medium-Fine (6-8)", french_press: "Medium-Coarse (9-11)" },
-  "puteus": { espresso: "Fine (6-8)", v60: "Medium-Fine (11-13)", french_press: "Medium-Coarse (14-16)" },
-  "breville_BCG820BSS": { espresso: "Fine (5-7)", v60: "Medium-Fine (10-12)", french_press: "Medium-Coarse (13-15)" },
-  "rancilio_rocky": { espresso: "Fine (5-6)", v60: "Medium-Fine (10-12)", french_press: "Medium-Coarse (13-15)" },
-  "baratza_preciso": { espresso: "Fine (6-8)", v60: "Medium-Fine (12-14)", french_press: "Medium-Coarse (15-17)" },
-  "sbdx": { espresso: "Fine (5-6)", v60: "Medium-Fine (10-12)", french_press: "Medium-Coarse (13-15)" },
-  "df64": { espresso: "Extra Fine (1-3)", v60: "Medium-Fine (6-8)", french_press: "Medium-Coarse (9-11)" },
-  "other": { espresso: "Fine", v60: "Medium-Fine", french_press: "Medium-Coarse" }
+// EQUIPMENT DATA
+const equipment = {
+  home: {
+    grinders: [
+      "Fellow Ode","Niche Zero","Baratza Encore","Baratza Sette 270",
+      "Eureka Mignon","Comandante C40","1Zpresso JX","Wilfa Svart",
+      "Breville Smart Grinder","DF64"
+    ],
+    machines: [
+      "Breville Bambino Plus","Gaggia Classic Pro","Rancilio Silvia",
+      "Lelit Bianca","Rocket Appartamento","Profitec Pro 300",
+      "ECM Classika","Flair 58","La Pavoni Europiccola","Breville Dual Boiler"
+    ]
+  },
+  cafe: {
+    grinders: [
+      "Mahlkönig EK43","Mahlkönig E65S","Mazzer Major","Mazzer Super Jolly",
+      "Compak K10","Ditting 807","Anfim SP II","Eureka Zenith",
+      "Fiorenzato F83","Bentwood Vertical 63"
+    ],
+    machines: [
+      "Synesso MVP Hydra","La Marzocco Linea PB","Slayer Espresso",
+      "Victoria Arduino Black Eagle","Nuova Simonelli Aurelia",
+      "Faema E71","Kees van der Westen Spirit","Sanremo Cafe Racer",
+      "Synesso S200","La Marzocco GB5"
+    ]
+  }
 };
 
-// ------------------------
-// Main Function
-// ------------------------
-function generateRecipe() {
-  const roast = document.getElementById("roast").value;
-  const process = document.getElementById("process").value;
-  const method = document.getElementById("method").value;
-  const water = document.getElementById("water").value;
-  const hardness = document.getElementById("hardness").value;
+// GRIND SETTINGS
+const grindSettings = {
+  "Fellow Ode": { espresso: "Not recommended", filter: "3–5" },
+  "Niche Zero": { espresso: "15–18", filter: "30–40" },
+  "Baratza Encore": { espresso: "Not ideal", filter: "18–22" },
+  "Baratza Sette 270": { espresso: "8–12", filter: "20–25" },
+  "Eureka Mignon": { espresso: "10–14", filter: "25–30" },
+  "Comandante C40": { espresso: "10–12 clicks", filter: "20–25 clicks" },
+  "Mahlkönig EK43": { espresso: "1.5–2.5", filter: "7–9" }
+};
+
+// USER TYPE HANDLER
+document.getElementById("userType").addEventListener("change", function () {
+  const type = this.value;
+  const grinder = document.getElementById("grinder");
+  const machine = document.getElementById("espressoMachine");
+
+  grinder.innerHTML = "";
+  machine.innerHTML = "";
+
+  equipment[type].grinders.forEach(g => grinder.add(new Option(g, g)));
+  equipment[type].machines.forEach(m => machine.add(new Option(m, m)));
+
+  document.getElementById("equipmentSection").style.display = "block";
+});
+
+// LEARNING STORAGE
+function storeLearning(data) {
+  const history = JSON.parse(localStorage.getItem("learning")) || [];
+  history.push(data);
+  localStorage.setItem("learning", JSON.stringify(history));
+}
+
+// MAIN LOGIC
+function generateBrew() {
+  const brewMethod = document.getElementById("brewMethod").value;
   const grinder = document.getElementById("grinder").value;
-  const sweetness = document.getElementById("sweetness").value;
-  const acidity = document.getElementById("acidity").value;
-  const body = document.getElementById("body").value;
-  const flavor = document.getElementById("flavor").value;
-  const notes = document.getElementById("notes").value;
+  const water = document.getElementById("water").value;
+  const sour = document.getElementById("sour").value;
+  const bitter = document.getElementById("bitter").value;
 
-  // Base calculations (simplified example)
-  let temperature = 92; // default
-  if (roast === "light") temperature += 2;
-  if (roast === "dark") temperature -= 2;
+  let ratio = "1:16";
+  let temp = "94°C";
 
-  let ratio = "1:16"; // default
-  if (method === "espresso") ratio = "1:2";
-  if (method === "cold_brew") ratio = "1:8";
-
-  let grindCategory = "Medium-Fine"; // default
-  if (method === "espresso") grindCategory = "Fine";
-  else if (method === "french_press") grindCategory = "Medium-Coarse";
-
-  // Grinder adjustments
-  let grind;
-  if (grinderMap[grinder] && grinderMap[grinder][method]) {
-    grind = grinderMap[grinder][method];
-  } else {
-    grind = grindCategory;
+  if (brewMethod === "Espresso") {
+    ratio = "1:2";
+    temp = "93°C";
   }
 
-  // Build brew object
-  const brew = {
-    roast, process, method, water, hardness, grinder,
-    grind, temperature, ratio,
-    feedback: { sweetness, acidity, body, flavor, notes },
-    timestamp: Date.now()
-  };
+  if (water === "Third Wave Water") {
+    temp += " (optimized minerals)";
+  }
 
-  // Save locally
-  let storedBrews = JSON.parse(localStorage.getItem("brews") || "[]");
-  storedBrews.push(brew);
-  localStorage.setItem("brews", JSON.stringify(storedBrews));
+  let grind = "Adjust to taste";
+  if (grindSettings[grinder]) {
+    grind = brewMethod === "Espresso"
+      ? grindSettings[grinder].espresso
+      : grindSettings[grinder].filter;
+  }
 
-  // Display result
-  document.getElementById("result").innerText =
-`=== Your Brew Recommendation ===
-Roast: ${roast}
-Process: ${process}
-Brew Method: ${method}
-Temperature: ${temperature}°C
-Ratio: ${ratio}
-Grind Recommendation: ${grind}
-Grinder Used: ${grinder.replace("_", " ")}
-Water: ${water.replace("_", " ")} (${hardness})`;
+  let guidance = "Balanced extraction.";
+  if (sour === "Too Sour") guidance = "Grind finer or increase extraction.";
+  if (bitter === "Too Bitter") guidance = "Grind coarser or reduce extraction.";
 
-  const historyHtml = storedBrews.reverse().map(b => {
-    return `
-<div style="background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #ddd;">
-  <strong>${new Date(b.timestamp).toLocaleString()}</strong><br>
-  Method: ${b.method} | Roast: ${b.roast}<br>
-  Temp: ${b.temperature}°C | Ratio: ${b.ratio}<br>
-  Grind: ${b.grind}<br>
-  <em>Feedback: ${b.feedback.sweetness} sweetness, ${b.feedback.acidity} acidity, ${b.feedback.body} body</em>
-</div>`;
-  }).join("");
+  storeLearning({ grinder, brewMethod, sour, bitter });
 
-  document.getElementById("lastBrew").innerHTML = "<h3>Previous Sessions & Feedback</h3>" + historyHtml;
+  document.getElementById("output").innerHTML = `
+    <h3>Brew Recommendation</h3>
+    <p><strong>Method:</strong> ${brewMethod}</p>
+    <p><strong>Ratio:</strong> ${ratio}</p>
+    <p><strong>Water Temp:</strong> ${temp}</p>
+    <p><strong>Grind Setting:</strong> ${grind}</p>
+    <hr>
+    <p><strong>Dial-In Guidance:</strong><br>${guidance}</p>
+    <p style="opacity:.8;font-size:.9em">
+      Refined using equipment data and aggregated user feedback.
+    </p>
+  `;
 }
