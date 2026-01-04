@@ -1,129 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Perfect Pour - Coffee Brew Optimizer</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Coffee Brew Optimizer</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<h1>Perfect Pour</h1>
+<div class="container">
+  <h1>Coffee Brew Optimizer</h1>
 
-<h2>Coffee Details</h2>
-<label>Roast:</label>
-<select id="roast">
-  <option value="light">Light</option>
-  <option value="medium">Medium</option>
-  <option value="dark">Dark</option>
-</select>
+  <!-- USER TYPE -->
+  <div class="section">
+    <label>Who is brewing?</label>
+    <select id="userType">
+      <option disabled selected value="">Select one</option>
+      <option value="home">Home Barista</option>
+      <option value="cafe">Café / Professional</option>
+    </select>
+  </div>
 
-<label>Processing Method:</label>
-<select id="process">
-  <option value="washed">Washed / Fully Washed</option>
-  <option value="natural">Natural / Dry</option>
-  <option value="honey">Honey / Pulped Natural</option>
-  <option value="semi-washed">Semi-Washed / Wet-Hulled</option>
-  <option value="anaerobic">Anaerobic Fermentation</option>
-  <option value="carbonic">Carbonic Maceration</option>
-  <option value="experimental">Experimental / Specialty</option>
-</select>
+  <!-- COFFEE DETAILS -->
+  <div class="section">
+    <h3>Coffee Details</h3>
 
-<h2>Brew Method</h2>
-<select id="method">
-  <option value="espresso">Espresso</option>
-  <option value="v60">V60 / Pour-over</option>
-  <option value="chemex">Chemex</option>
-  <option value="aeropress">Aeropress</option>
-  <option value="french_press">French Press</option>
-  <option value="siphon">Siphon</option>
-  <option value="cold_brew">Cold Brew</option>
-  <option value="moka_pot">Moka Pot</option>
-  <option value="batch_brew">Batch Brew / Drip</option>
-</select>
+    <label>Origin</label>
+    <select id="origin">
+      <option>Kenya</option>
+      <option>Ethiopia</option>
+      <option>Colombia</option>
+      <option>Brazil</option>
+      <option>Guatemala</option>
+      <option>Panama</option>
+      <option>Costa Rica</option>
+      <option>Rwanda</option>
+      <option>Indonesia</option>
+      <option>Yemen</option>
+    </select>
 
-<h2>Water Details</h2>
-<label>Water Type / Filtration:</label>
-<select id="water">
-  <option value="tap">Tap</option>
-  <option value="filtered">Filtered</option>
-  <option value="reverse_osmosis">Reverse Osmosis (RO)</option>
-  <option value="bottled">Bottled</option>
-  <option value="spring">Spring Water</option>
-  <option value="distilled">Distilled</option>
-</select>
+    <label>Altitude</label>
+    <select id="altitude">
+      <option>800–1200m</option>
+      <option>1200–1600m</option>
+      <option>1600–2000m</option>
+      <option>2000m+</option>
+    </select>
 
-<label>Water Hardness:</label>
-<select id="hardness">
-  <option value="soft">Soft</option>
-  <option value="medium">Medium</option>
-  <option value="hard">Hard</option>
-</select>
+    <label>Varietal</label>
+    <select id="varietal">
+      <option>Bourbon</option>
+      <option>Typica</option>
+      <option>SL28 / SL34</option>
+      <option>Geisha</option>
+      <option>Catuai</option>
+    </select>
 
-<h2>Grinder</h2>
-<label>Grinder Model:</label>
-<select id="grinder">
-  <option value="baratza_Encore">Baratza Encore</option>
-  <option value="baratza_S207">Baratza Sette 270/270Wi</option>
-  <option value="baratza_Vario">Baratza Vario</option>
-  <option value="fellow_Ottimo">Fellow Ode / Ottimo</option>
-  <option value="mazzer_Super_Jolly">Mazzer Super Jolly</option>
-  <option value="mazzer_minim">Mazzer Mini</option>
-  <option value="ek43">Mahlkönig EK43</option>
-  <option value="wilfa_SVart">Wilfa Svart</option>
-  <option value="niche_zero">Niche Zero</option>
-  <option value="liddell">Liddell</option>
-  <option value="comandante_C40">Comandante C40</option>
-  <option value="eureka_Mignon_Specialita">Eureka Mignon Specialita</option>
-  <option value="rocket_R58_grinder">Rocket R58 Grinder</option>
-  <option value="puteus">Puteus</option>
-  <option value="breville_BCG820BSS">Breville Smart Grinder Pro</option>
-  <option value="rancilio_rocky">Rancilio Rocky</option>
-  <option value="baratza_preciso">Baratza Preciso</option>
-  <option value="sbdx">SBDX</option>
-  <option value="df64">DF64</option>
-  <option value="other">Other / Unlisted</option>
-</select>
+    <label>Roast Date</label>
+    <input type="date" id="roastDate" />
+  </div>
 
-<h2>Taste Feedback</h2>
-<label>Sweetness:</label>
-<select id="sweetness">
-  <option value="low">Low</option>
-  <option value="medium">Medium</option>
-  <option value="high">High</option>
-</select>
+  <!-- ROAST & PROCESS -->
+  <div class="section">
+    <label>Roast Level</label>
+    <select id="roast">
+      <option>Light</option>
+      <option>Medium</option>
+      <option>Dark</option>
+    </select>
 
-<label>Acidity:</label>
-<select id="acidity">
-  <option value="low">Low</option>
-  <option value="medium">Medium</option>
-  <option value="high">High</option>
-</select>
+    <label>Processing Method</label>
+    <select id="process">
+      <option>Washed</option>
+      <option>Natural</option>
+      <option>Honey</option>
+      <option>Carbonic Maceration</option>
+      <option>Experimental</option>
+    </select>
+  </div>
 
-<label>Body:</label>
-<select id="body">
-  <option value="light">Light</option>
-  <option value="medium">Medium</option>
-  <option value="full">Full</option>
-</select>
+  <!-- BREW METHOD -->
+  <div class="section">
+    <label>Brew Method</label>
+    <select id="brewMethod">
+      <option>Espresso</option>
+      <option>V60</option>
+      <option>Chemex</option>
+      <option>Aeropress</option>
+      <option>French Press</option>
+      <option>Cold Brew</option>
+      <option>Batch Brew</option>
+    </select>
+  </div>
 
-<label>Flavor Notes:</label>
-<select id="flavor">
-  <option value="fruity">Fruity</option>
-  <option value="nutty">Nutty</option>
-  <option value="chocolate">Chocolate</option>
-  <option value="floral">Floral</option>
-  <option value="earthy">Earthy</option>
-  <option value="other">Other</option>
-</select>
+  <!-- WATER -->
+  <div class="section">
+    <label>Water Type</label>
+    <select id="water">
+      <option>Tap</option>
+      <option>Filtered</option>
+      <option>Reverse Osmosis</option>
+      <option>Third Wave Water</option>
+      <option>Bottled Spring</option>
+    </select>
+  </div>
 
-<label>Optional Notes:</label>
-<textarea id="notes" rows="3" placeholder="Describe your experience, e.g., aromas, aftertaste, texture..."></textarea>
+  <!-- EQUIPMENT -->
+  <div class="section" id="equipmentSection" style="display:none;">
+    <label>Grinder</label>
+    <select id="grinder"></select>
 
-<button onclick="generateRecipe()">Generate Brew</button>
+    <label>Espresso Machine</label>
+    <select id="espressoMachine"></select>
+  </div>
 
-<div id="result"></div>
-<div id="lastBrew"></div>
+  <!-- TASTE FEEDBACK -->
+  <div class="section">
+    <h3>Taste Feedback</h3>
+
+    <label>Sourness</label>
+    <select id="sour">
+      <option>Balanced</option>
+      <option>Too Sour</option>
+      <option>Flat</option>
+    </select>
+
+    <label>Bitterness</label>
+    <select id="bitter">
+      <option>Balanced</option>
+      <option>Too Bitter</option>
+      <option>Hollow</option>
+    </select>
+
+    <label>Notes (optional)</label>
+    <textarea id="notes"></textarea>
+  </div>
+
+  <button onclick="generateBrew()">Generate Brew</button>
+
+  <div class="card" id="output"></div>
+</div>
 
 <script src="script.js"></script>
 </body>
