@@ -151,46 +151,30 @@
     </select>
   </div>
 
+  <button id="submit-btn">Get Brew Recommendation</button>
+  <div class="card" id="output"></div>
+  
   <!-- SECTION 6: Taste Feedback (SCA Standard) -->
   <div class="section">
     <h3>Taste Feedback (SCA Standard)</h3>
+// SCA dropdown fields
+const scaFields = ["aroma", "flavor", "aftertaste", "acidity", "body", "balance", "sweetness", "clean-cup", "uniformity", "overall"];
 
-    <label for="aroma">Aroma (0–10)</label>
-    <select id="aroma">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
-
-    <label for="flavor">Flavor (0–10)</label>
-    <select id="flavor">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
-
-    <label for="aftertaste">Aftertaste (0–10)</label>
-    <select id="aftertaste">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
-
-    <label for="acidity">Acidity (0–10)</label>
-    <select id="acidity">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
-
-    <label for="body">Body / Mouthfeel (0–10)</label>
-    <select id="body">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
-
-    <label for="balance">Balance (0–10)</label>
-    <select id="balance">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
-
-    <label for="sweetness">Sweetness (0–10)</label>
-    <select id="sweetness">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
-
-    <label for="clean-cup">Clean Cup (0–10)</label>
-    <select id="clean-cup">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
-
-    <label for="uniformity">Uniformity (0–10)</label>
-    <select id="uniformity">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
-
-    <label for="overall">Overall (0–10)</label>
-    <select id="overall">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
-
+// Generate options 0–10 in 1-unit increments
+scaFields.forEach(fieldId => {
+  const select = document.getElementById(fieldId);
+  if (select) {
+    for (let i = 0; i <= 10; i++) {
+      let option = document.createElement("option");
+      option.value = i;
+      option.textContent = i;
+      select.appendChild(option);
+    }
+  }
+});
     <label for="taste-comments">Additional Comments</label>
     <textarea id="taste-comments" placeholder="Describe your experience, flavors, or other notes..."></textarea>
   </div>
-
-  <button id="submit-btn">Get Brew Recommendation</button>
-  <div class="card" id="output"></div>
 
 </div>
 
