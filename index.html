@@ -1,143 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coffee Brew Optimizer</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <div class="container">
+
   <h1>Coffee Brew Optimizer</h1>
 
-  <!-- USER TYPE -->
+  <!-- SECTION 1: Home Barista or Café -->
   <div class="section">
-    <label>Who is brewing?</label>
-    <select id="userType">
-      <option disabled selected value="">Select one</option>
+    <label for="user-type">Are you a Home Barista or a Café?</label>
+    <select id="user-type">
+      <option value="">-- Choose --</option>
       <option value="home">Home Barista</option>
       <option value="cafe">Café / Professional</option>
     </select>
   </div>
 
-  <!-- COFFEE DETAILS -->
+  <!-- SECTION 2: Coffee Details -->
   <div class="section">
     <h3>Coffee Details</h3>
 
-    <label>Origin</label>
+    <label for="origin">Origin</label>
     <select id="origin">
-      <option>Kenya</option>
-      <option>Ethiopia</option>
-      <option>Colombia</option>
-      <option>Brazil</option>
-      <option>Guatemala</option>
-      <option>Panama</option>
-      <option>Costa Rica</option>
-      <option>Rwanda</option>
-      <option>Indonesia</option>
-      <option>Yemen</option>
+      <option value="">-- Choose --</option>
+      <option value="Ethiopia">Ethiopia</option>
+      <option value="Kenya">Kenya</option>
+      <option value="Colombia">Colombia</option>
+      <option value="Brazil">Brazil</option>
+      <option value="Guatemala">Guatemala</option>
+      <option value="Costa-rica">Costa Rica</option>
+      <option value="Panama">Panama</option>
+      <option value="Peru">Peru</option>
+      <option value="Mexico">Mexico</option>      <!-- Add more origins as needed -->
     </select>
 
-    <label>Altitude</label>
+    <label for="altitude">Altitude</label>
     <select id="altitude">
-      <option>800–1200m</option>
-      <option>1200–1600m</option>
-      <option>1600–2000m</option>
-      <option>2000m+</option>
+      <option value="">-- Choose --</option>
+      <option value="0-800m">0–800m</option>
+      <option value="800-1200m">800–1200m</option>
+      <option value="1200-1800m">1200–1800m</option>
+      <option value="1800m+">1800m+</option>
     </select>
 
-    <label>Varietal</label>
+    <label for="varietal">Varietal</label>
     <select id="varietal">
-      <option>Bourbon</option>
-      <option>Typica</option>
-      <option>SL28 / SL34</option>
-      <option>Geisha</option>
-      <option>Catuai</option>
+      <option value="">-- Choose --</option>
+      <option value="heirloom">Heirloom</option>
+      <option value="typica">Typica</option>
+      <option value="caturra">Caturra</option>
+      <option value="bourbon">Bourbon</option>
+      <option value="pacamara">Pacamara</option>
     </select>
 
-    <label>Roast Date</label>
-    <input type="date" id="roastDate" />
+    <label for="roast-date">Roast Date</label>
+    <input type="date" id="roast-date">
+
+    <label for="processing">Processing Method</label>
+    <select id="processing">
+      <option value="">-- Choose --</option>
+      <option value="washed">Washed</option>
+      <option value="natural">Natural</option>
+      <option value="honey">Honey</option>
+      <option value="wet-hulled">Wet Hulled</option>
+      <option value="Pulped natural">Pulped Natural</option>
+      <option value="anaerobic">Anaerobic</option>
+      <option value="semi-washed">Semi-Washed</option>
+    </select>
+
+    <label for="roast-level">Roast Level</label>
+    <select id="roast-level">
+      <option value="">-- Choose --</option>
+      <option value="light">Light</option>
+      <option value="medium">Medium</option>
+      <option value="medium-dark">Medium-Dark</option>
+      <option value="dark">Dark</option>
+    </select>
   </div>
 
-  <!-- ROAST & PROCESS -->
+  <!-- SECTION 3: Brew Method -->
   <div class="section">
-    <label>Roast Level</label>
-    <select id="roast">
-      <option>Light</option>
-      <option>Medium</option>
-      <option>Dark</option>
+    <h3>Brew Method</h3>
+
+    <label for="brew-method">Select Brew Method:</label>
+    <select id="brew-method">
+      <option value="">-- Choose --</option>
+      <option value="espresso">Espresso</option>
+      <option value="v60">V60 / Chemex</option>
+      <option value="aeropress">Aeropress</option>
+      <option value="french-press">French Press</option>
+      <option value="turkish">Turkish</option>
+      <option value="moka-pot">Moka Pot</option>
+      <option value="balance-siphon">Balance Siphon</option>
+      <option value="syphon">Syphon</option>
+      <option value="cold-brew">Cold Brew</option>
+      <option value="percolator">Percolator</option>
+      <option value="cupper">Cupper / Tasting</option>
+      <option value="drip-machine">Drip Machine</option>
+      <option value="batch-brew">Batch Brew</option>
+      <option value="nel-drip">Nel Drip</option>
+      <option value="kalita-wave">Kalita Wave</option>
+      <!-- Add remaining top methods -->
     </select>
 
-    <label>Processing Method</label>
-    <select id="process">
-      <option>Washed</option>
-      <option>Natural</option>
-      <option>Honey</option>
-      <option>Carbonic Maceration</option>
-      <option>Experimental</option>
-    </select>
+    <!-- Conditional Espresso Machine Section -->
+    <div id="espresso-machine-section" style="display:none;">
+      <label for="espresso-machine">Choose your Espresso Machine:</label>
+      <select id="espresso-machine">
+        <option value="">-- Choose --</option>
+        <option value="synesso-mvp-hydra">Synesso MVP Hydra</option>
+        <option value="la-marzocco-linea-mini">La Marzocco Linea Mini</option>
+        <option value="slayer-steam">Slayer Steam</option>
+        <option value="rocket-r58">Rocket R58</option>
+        <option value="fellow-opra">Fellow Opra</option>
+        <!-- Add top 20 espresso machines -->
+      </select>
+    </div>
   </div>
 
-  <!-- BREW METHOD -->
+  <!-- SECTION 4: Grinder -->
   <div class="section">
-    <label>Brew Method</label>
-    <select id="brewMethod">
-      <option>Espresso</option>
-      <option>V60</option>
-      <option>Chemex</option>
-      <option>Aeropress</option>
-      <option>French Press</option>
-      <option>Cold Brew</option>
-      <option>Batch Brew</option>
+    <label for="grinder">Select Grinder:</label>
+    <select id="grinder">
+      <option value="">-- Choose --</option>
+      <option value="mazzer-mini">Mazzer Mini</option>
+      <option value="mazzer-super-jolly">Mazzer Super Jolly</option>
+      <option value="baratza-encore">Baratza Encore</option>
+      <option value="baratza-sette-270">Baratza Sette 270</option>
+      <option value="fellow-ode">Fellow Ode</option>
+      <!-- Add top 20 grinders -->
     </select>
   </div>
 
-  <!-- WATER -->
+  <!-- SECTION 5: Water -->
   <div class="section">
-    <label>Water Type</label>
-    <select id="water">
-      <option>Tap</option>
-      <option>Filtered</option>
-      <option>Reverse Osmosis</option>
-      <option>Third Wave Water</option>
-      <option>Bottled Spring</option>
+    <label for="water-type">Select Water Type:</label>
+    <select id="water-type">
+      <option value="">-- Choose --</option>
+      <option value="tap">Tap Water</option>
+      <option value="filtered">Filtered</option>
+       <option value="Distilled">Distilled</option>
+      <option value="reverse-osmosis">Reverse Osmosis</option>
+      <option value="third-wave">Third Wave Water</option>
+       <option value="spring">Spring</option>    
     </select>
   </div>
 
-  <!-- EQUIPMENT -->
-  <div class="section" id="equipmentSection" style="display:none;">
-    <label>Grinder</label>
-    <select id="grinder"></select>
-
-    <label>Espresso Machine</label>
-    <select id="espressoMachine"></select>
-  </div>
-
-  <!-- TASTE FEEDBACK -->
+  <!-- SECTION 6: Taste Feedback (SCA Standard) -->
   <div class="section">
-    <h3>Taste Feedback</h3>
+    <h3>Taste Feedback (SCA Standard)</h3>
 
-    <label>Sourness</label>
-    <select id="sour">
-      <option>Balanced</option>
-      <option>Too Sour</option>
-      <option>Flat</option>
-    </select>
+    <label for="aroma">Aroma (0–10)</label>
+    <select id="aroma">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
 
-    <label>Bitterness</label>
-    <select id="bitter">
-      <option>Balanced</option>
-      <option>Too Bitter</option>
-      <option>Hollow</option>
-    </select>
+    <label for="flavor">Flavor (0–10)</label>
+    <select id="flavor">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
 
-    <label>Notes (optional)</label>
-    <textarea id="notes"></textarea>
+    <label for="aftertaste">Aftertaste (0–10)</label>
+    <select id="aftertaste">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
+
+    <label for="acidity">Acidity (0–10)</label>
+    <select id="acidity">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
+
+    <label for="body">Body / Mouthfeel (0–10)</label>
+    <select id="body">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
+
+    <label for="balance">Balance (0–10)</label>
+    <select id="balance">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
+
+    <label for="sweetness">Sweetness (0–10)</label>
+    <select id="sweetness">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
+
+    <label for="clean-cup">Clean Cup (0–10)</label>
+    <select id="clean-cup">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
+
+    <label for="uniformity">Uniformity (0–10)</label>
+    <select id="uniformity">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
+
+    <label for="overall">Overall (0–10)</label>
+    <select id="overall">${[...Array(21)].map((_,i)=>`<option value="${i/2}">${i/2}</option>`).join('')}</select>
+
+    <label for="taste-comments">Additional Comments</label>
+    <textarea id="taste-comments" placeholder="Describe your experience, flavors, or other notes..."></textarea>
   </div>
 
-  <button onclick="generateBrew()">Generate Brew</button>
-
+  <button id="submit-btn">Get Brew Recommendation</button>
   <div class="card" id="output"></div>
+
 </div>
 
 <script src="script.js"></script>
