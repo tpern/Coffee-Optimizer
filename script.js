@@ -13,6 +13,24 @@ brewMethodSelect.addEventListener("change", function () {
   }
 });
 
+// Initialize state on page load
+brewMethodSelect.dispatchEvent(new Event("change"));
+
+// --------------------------
+// User Type Logic (Home vs Café)
+// --------------------------
+const userTypeSelect = document.getElementById("user-type");
+
+userTypeSelect.addEventListener("change", function () {
+  const isCafe = this.value === "cafe";
+
+  // Espresso-first assumption for cafés
+  if (isCafe) {
+    brewMethodSelect.value = "espresso";
+    brewMethodSelect.dispatchEvent(new Event("change"));
+  }
+});
+
 // --------------------------
 // Smart Brew Mapping Table
 // --------------------------
