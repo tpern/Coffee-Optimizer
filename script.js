@@ -297,6 +297,186 @@ function updateLearningModel(selections, extractionDiagnosis) {
   model.samples += 1;
 }
 
+
+// --------------------------
+// STEP 8: Persistence Layer
+// --------------------------
+
+const STORAGE_KEYS = {
+  history: "coffee_brew_history",
+  learning: "coffee_learning_model"
+};
+
+// Load persisted data on startup
+(function loadPersistedData() {
+  const savedHistory = localStorage.getItem(STORAGE_KEYS.history);
+  const savedLearning = localStorage.getItem(STORAGE_KEYS.learning);
+
+  if (savedHistory) {
+    try {
+      brewHistory = JSON.parse(savedHistory);
+    } catch (e) {
+      console.warn("Failed to load brew history");
+    }
+  }
+
+  if (savedLearning) {
+    try {
+      learningModel = JSON.parse(savedLearning);
+    } catch (e) {
+      console.warn("Failed to load learning model");
+    }
+  }
+})();
+
+function persistLearningData() {
+  localStorage.setItem(
+    STORAGE_KEYS.history,
+    JSON.stringify(brewHistory)
+  );
+
+  localStorage.setItem(
+    STORAGE_KEYS.learning,
+    JSON.stringify(learningModel)
+  );
+}
+
+// --------------------------
+// STEP 9: Learning Reset & Control Layer
+// --------------------------
+
+// Reset learning for a specific grinder + brew method
+function resetLearningFor(selections) {
+  const key = `${selections.grinder}::${selections.brewMethod}`;
+
+  if (learningModel[key]) {
+    delete learningModel[key];
+    persistLearningData();
+    console.info(`Learning reset for ${key}`);
+  }
+}
+
+// Reset ALL learning (global)
+function resetAllLearning() {
+  learningModel = {};
+  persistLearningData();
+  console.info("All learning reset");
+}
+
+// Reset brew history only
+function resetBrewHistory() {
+  brewHistory = [];
+  persistLearningData();
+  console.info("Brew history reset");
+}
+
+// Nuclear option: reset EVERYTHING
+function resetEverything() {
+  brewHistory = [];
+  learningModel = {};
+  persistLearningData();
+  console.info("All data reset");
+}
+
+// --------------------------
+// STEP 10: Debug / Inspector Output (Read-Only)
+// --------------------------
+
+// Toggle this to false to hide inspector in production
+const DEBUG_MODE = true;
+
+// Render learning + history to the UI safely
+function renderDebugInspector() {
+  if (!DEBUG_MODE) return;
+
+  const inspector = document.getElementById("debug-inspector");
+  if (!inspector) return;
+
+  inspector.innerHTML = `
+    <h3>⚙️ Debug Inspector</h3>
+
+    <h4>Learning Model</h4>
+    <pre>${JSON.stringify(learningModel, null, 2)}</pre>
+
+    <h4>Brew History (${brewHistory.length} entries)</h4>
+    <pre>${JSON.stringify(brewHistory, null, 2)}</pre>
+  `;
+}
+
+// --------------------------
+// STEP 11: Learning Portability (Export / Import)
+// --------------------------
+
+// Schema versioning (future-proofing)
+const EXPORT_VERSION = 1;
+
+// Export all learning data as downloadable JSON
+function exportLearningData() {
+  const payload = {
+    version: EXPORT_VERSION,
+    exportedAt: new Date().toISOString(),
+    brewHistory,
+    learningModel
+  };
+
+  const blob = new Blob(
+    [JSON.stringify(payload, null, 2)],
+    { type: "application/json" }
+  );
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = "coffee-learning-backup.json";
+  document.body.appendChild(a);
+  a.click();
+
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  console.info("Learning data exported");
+}
+
+// Import learning data from uploaded JSON file
+function importLearningData(file) {
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function (event) {
+    try {
+      const parsed = JSON.parse(event.target.result);
+
+      // Basic validation
+      if (
+        typeof parsed !== "object" ||
+        parsed.version !== EXPORT_VERSION ||
+        !Array.isArray(parsed.brewHistory) ||
+        typeof parsed.learningModel !== "object"
+      ) {
+        alert("Invalid or incompatible learning file");
+        return;
+      }
+
+      // Apply imported data
+      brewHistory = parsed.brewHistory;
+      learningModel = parsed.learningModel;
+
+      // Persist immediately
+      persistLearningData();
+
+      console.info("Learning data imported successfully");
+      alert("Learning data imported successfully");
+    } catch (err) {
+      console.error("Import failed", err);
+      alert("Failed to import learning data");
+    }
+  };
+
+  reader.readAsText(file);
+}
+
 // --------------------------
 // Submit Button Listener
 // --------------------------
@@ -321,21 +501,33 @@ document.getElementById("submit-btn").addEventListener("click", function () {
   };
 
   
-  const extractionDiagnosis = diagnoseExtraction(scaFeedback);
-const adjustmentAdvice = adjustRecipe(extractionDiagnosis, selections);
-  
 // --------------------------
 // STEP 4: Store Brew & Learn
 // --------------------------
 
+
+// 1. Diagnose extraction
+const extractionDiagnosis = diagnoseExtraction(scaFeedback);
+
+// 2. Generate adjustment advice
+const adjustmentAdvice = adjustRecipe(extractionDiagnosis, selections);
+
+// 3. Store brew history
 brewHistory.push({
   selections,
   scaFeedback,
   extractionDiagnosis,
   timestamp: Date.now()
 });
+
+// 4. Update learning model
 updateLearningModel(selections, extractionDiagnosis);
 
+// 5. Persist EVERYTHING (history + learning)
+persistLearningData();
+
+  renderDebugInspector();
+  
 // --------------------------
 // STEP 5: Apply Learning to Recommendation (Read-Only)
 // --------------------------
