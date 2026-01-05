@@ -8,6 +8,142 @@ const grinderSelect = document.getElementById("grinder");
 const espressoMachineSelect = document.getElementById("espresso-machine");
 const userTypeSelect = document.getElementById("user-type");
 
+
+const MACHINE_CAPABILITIES = {
+  "la-marzocco-linea-mini": {
+    pressureProfiling: false,
+    flowControl: false,
+    preInfusion: "mechanical",
+    controlType: "fixed"
+  },
+    "slayer-steam": {
+    pressureProfiling: "manual",
+    flowControl: true,
+    preInfusion: true,
+    controlType: "flow-led"
+  },
+
+  "synesso-mvp-hydra": {
+    pressureProfiling: true,
+    flowControl: false,
+    preInfusion: true,
+    controlType: "pressure-led"
+  },
+
+  "decent-de1": {
+    pressureProfiling: true,
+    flowControl: true,
+    preInfusion: true,
+    controlType: "programmable"
+  }
+};
+
+
+// =====================================================
+// PRESSURE PROFILE DEFINITIONS
+// =====================================================
+
+const PRESSURE_PROFILES = {
+  classic_9bar: {
+    label: "Classic 9 Bar",
+    requires: {pressureProfiling: false}
+  },
+
+  gentle_preinfusion: {
+    label: "Gentle Pre-Infusion → 9 Bar",
+    requires: {preInfusion: true}
+  },
+
+  declining_pressure: {
+    label: "Declining Pressure (9 → 6 bar)",
+    requires: {pressureProfiling: true}
+  },
+
+  slayer_style_flow: {
+    label: "Slayer-Style Flow Control",
+    requires: {flowControl: true}
+  },
+
+  blooming_espresso: {
+    label: "Blooming Espresso (Low pressure soak)",
+    requires: {pressureProfiling: true,
+      preInfusion: true
+    }
+  },
+
+  lever_style_profile: {
+    label: "Lever-Style Decline",
+    requires: {
+      pressureProfiling: true}
+  }
+};
+
+// =====================================================
+// PRESSURE PROFILE COMPATIBILITY ENGINE
+// =====================================================
+
+function evaluatePressureProfile(machineId, profileId) {
+  const machine = MACHINE_CAPABILITIES[machineId];
+  const profile = PRESSURE_PROFILES[profileId];
+
+  if (!machine || !profile) {
+    return {
+      compatible: false,
+      reason: "Unknown machine or profile"
+    };
+  }
+
+  const requirements = profile.requires;
+
+  // Check pressure profiling
+  if (
+    requirements.pressureProfiling &&
+    machine.pressureProfiling !== true
+  ) {
+    return {
+      compatible: false,
+      reason: "Machine does not support programmable pressure profiling"
+    };
+  }
+
+  // Check flow control
+  if (
+    requirements.flowControl &&
+    machine.flowControl !== true
+  ) {
+    return {
+      compatible: false,
+      reason: "Machine lacks flow control capability"
+    };
+  }
+
+  // Check pre-infusion
+  if (
+    requirements.preInfusion &&
+    !machine.preInfusion
+  ) {
+    return {
+      compatible: false,
+      reason: "Machine does not support pre-infusion"
+    };
+  }
+
+  // Soft compatibility warnings
+  if (
+    machine.pressureProfiling === "manual" &&
+    requirements.pressureProfiling
+  ) {
+    return {
+      compatible: true,
+      warning: "Profile requires manual control during extraction"
+    };
+  }
+
+  return {
+    compatible: true
+  };
+}
+
 // =====================================================
 // SHOW / HIDE ESPRESSO MACHINE SECTION
 // =====================================================
