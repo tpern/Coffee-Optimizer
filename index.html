@@ -83,38 +83,52 @@
     </select>
   </div>
 
-  <!-- SECTION 3: Brew Method -->
-  <div class="section">
-    <h3>Brew Method</h3>
+<!-- SECTION 3: Brew Method -->
+<div class="section">
+  <h3>Brew Method</h3>
 
-    <label for="brew-method">Select Brew Method:</label>
-    <select id="brew-method">
+  <label for="brew-method">Select Brew Method:</label>
+  <select id="brew-method">
+    <option value="">-- Choose --</option>
+    <option value="espresso">Espresso</option>
+    <option value="v60">V60 / Chemex</option>
+    <option value="aeropress">Aeropress</option>
+    <option value="french-press">French Press</option>
+    <option value="turkish">Turkish</option>
+    <option value="moka-pot">Moka Pot</option>
+    <option value="balance-siphon">Balance Siphon</option>
+    <option value="syphon">Syphon</option>
+    <option value="cold-brew">Cold Brew</option>
+  </select>
+
+  <!-- Conditional Espresso Machine Section -->
+  <div id="espresso-machine-section" style="display:none;">
+    <label for="espresso-machine">Choose your Espresso Machine:</label>
+    <select id="espresso-machine">
       <option value="">-- Choose --</option>
-      <option value="espresso">Espresso</option>
-      <option value="v60">V60 / Chemex</option>
-      <option value="aeropress">Aeropress</option>
-      <option value="french-press">French Press</option>
-      <option value="turkish">Turkish</option>
-      <option value="moka-pot">Moka Pot</option>
-      <option value="balance-siphon">Balance Siphon</option>
-      <option value="syphon">Syphon</option>
-      <option value="cold-brew">Cold Brew</option>
+      <option value="synesso-mvp-hydra">Synesso MVP Hydra</option>
+      <option value="la-marzocco-linea-mini">La Marzocco Linea Mini</option>
+      <option value="slayer-steam">Slayer Steam</option>
+      <option value="rocket-r58">Rocket R58</option>
+      <option value="fellow-opra">Fellow Opra</option>
     </select>
 
-    <!-- Conditional Espresso Machine Section -->
-    <div id="espresso-machine-section" style="display:none;">
-      <label for="espresso-machine">Choose your Espresso Machine:</label>
-      <select id="espresso-machine">
-        <option value="">-- Choose --</option>
-        <option value="synesso-mvp-hydra">Synesso MVP Hydra</option>
-        <option value="la-marzocco-linea-mini">La Marzocco Linea Mini</option>
-        <option value="slayer-steam">Slayer Steam</option>
-        <option value="rocket-r58">Rocket R58</option>
-        <option value="fellow-opra">Fellow Opra</option>
+    <!-- Pressure Profile Selection -->
+    <div id="pressure-profile-section" style="display:none;">
+      <label for="pressure-profile">Pressure Profile</label>
+      <select id="pressure-profile">
+        <option value="">-- Select Pressure Profile --</option>
       </select>
+
+      <div
+        id="pressure-profile-warning"
+        style="font-size: 0.9em; color: #b45309; margin-top: 4px;"
+      ></div>
     </div>
   </div>
+</div>
 
+  
   <!-- SECTION 4: Grinder -->
   <div class="section">
     <label for="grinder">Select Grinder:</label>
