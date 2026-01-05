@@ -1,37 +1,165 @@
-// --------------------------
-// Elements
-// --------------------------
+
+// =====================================================
+// ELEMENTS
+// =====================================================
 const brewMethodSelect = document.getElementById("brew-method");
 const espressoSection = document.getElementById("espresso-machine-section");
-
-// Show/hide espresso machine section only if brew method = espresso
-brewMethodSelect.addEventListener("change", function () {
-  if (this.value === "espresso") {
-    espressoSection.style.display = "block";
-  } else {
-    espressoSection.style.display = "none";
-  }
-});
-
-// Initialize state on page load
-brewMethodSelect.dispatchEvent(new Event("change"));
-
-// --------------------------
-// User Type Logic (Home vs Café)
-// --------------------------
+const grinderSelect = document.getElementById("grinder");
+const espressoMachineSelect = document.getElementById("espresso-machine");
 const userTypeSelect = document.getElementById("user-type");
 
+// =====================================================
+// SHOW / HIDE ESPRESSO MACHINE SECTION
+// =====================================================
+brewMethodSelect.addEventListener("change", function () {
+  espressoSection.style.display =
+    this.value === "espresso" ? "block" : "none";
+});
+brewMethodSelect.dispatchEvent(new Event("change"));
+
+// =====================================================
+// GRINDER & ESPRESSO MACHINE CATALOGS (NEW)
+// =====================================================
+
+// ---------- HOME GRINDERS (30+) ----------
+const HOME_GRINDERS = [
+  "baratza-encore",
+  "baratza-encore-esp",
+  "baratza-sette-30",
+  "baratza-sette-270",
+  "baratza-virtuoso-plus",
+  "fellow-ode",
+  "fellow-opus",
+  "eureka-mignon-manuale",
+  "eureka-mignon-specialita",
+  "eureka-mignon-silenzio",
+  "breville-smart-grinder-pro",
+  "breville-dose-control",
+  "lagom-mini",
+  "lagom-p64",
+  "niche-zero",
+  "df64",
+  "df83",
+  "timemore-sculptor-064",
+  "timemore-sculptor-078",
+  "comandante-c40",
+  "1zpresso-jx",
+  "1zpresso-jx-pro",
+  "1zpresso-k-max",
+  "kingrinder-k6",
+  "hario-skerton-pro",
+  "hario-mini-mill",
+  "wilfa-uniform",
+  "oxford-precision",
+  "capresso-infinity"
+];
+
+// ---------- CAFE / PROFESSIONAL GRINDERS (30+) ----------
+const CAFE_GRINDERS = [
+  "mazzer-mini",
+  "mazzer-super-jolly",
+  "mazzer-major",
+  "mazzer-robur",
+  "mazzer-kony",
+  "eureka-atom-65",
+  "eureka-atom-75",
+  "eureka-atom-pro",
+  "mythos-one",
+  "mythos-two",
+  "ditting-804",
+  "ditting-807",
+  "ditting-1203",
+  "mahlkonig-ek43",
+  "mahlkonig-ek43s",
+  "mahlkonig-k30",
+  "mahlkonig-e65s",
+  "mahlkonig-e80s",
+  "compak-e10",
+  "compak-f8",
+  "compak-r120",
+  "anfim-scody",
+  "anfim-sp-ii",
+  "anfim-luna",
+  "anfim-pratica",
+  "ceado-e37s",
+  "ceado-e37z",
+  "ceado-e92",
+  "ceado-e37sd",
+  "victoria-arduino-mythos"
+];
+
+// ---------- CAFE ESPRESSO MACHINES (30+) ----------
+const CAFE_ESPRESSO_MACHINES = [
+  "la-marzocco-linea-pb",
+  "la-marzocco-strada",
+  "la-marzocco-gs3",
+  "la-marzocco-linea-classic",
+  "synesso-mvp-hydra",
+  "synesso-es1",
+  "slayer-steam",
+  "slayer-single-group",
+  "victoria-arduino-black-eagle",
+  "victoria-arduino-white-eagle",
+  "nuova-simonelli-aurelia",
+  "nuova-simonelli-appia",
+  "sanremo-cafe-racer",
+  "sanremo-opera",
+  "sanremo-f18",
+  "rocket-r9",
+  "rocket-r58",
+  "kvdw-speedster",
+  "kvdw-spirit",
+  "wega-polaris",
+  "wega-atlas",
+  "rancilio-classe-11",
+  "rancilio-classe-9",
+  "ascaia-baby-t",
+  "ascaia-steel-uno",
+  "ascaia-steel-duo",
+  "la-cimbali-m100",
+  "la-cimbali-m39",
+  "faema-e71",
+  "faema-emblema"
+];
+
+// =====================================================
+// POPULATE DROPDOWNS (NEW)
+// =====================================================
+function populateSelect(selectEl, values) {
+  selectEl.innerHTML = `<option value="">-- Choose --</option>`;
+  values.forEach(v => {
+    const opt = document.createElement("option");
+    opt.value = v;
+    opt.textContent = v.replace(/-/g, " ").toUpperCase();
+    selectEl.appendChild(opt);
+  });
+}
+
+// =====================================================
+// USER TYPE LOGIC (HOME vs CAFE) — UPDATED
+// =====================================================
 userTypeSelect.addEventListener("change", function () {
   const isCafe = this.value === "cafe";
+
+  populateSelect(
+    grinderSelect,
+    isCafe ? CAFE_GRINDERS : HOME_GRINDERS
+  );
+
+  populateSelect(
+    espressoMachineSelect,
+    isCafe ? CAFE_ESPRESSO_MACHINES : []
+  );
+
   if (isCafe) {
     brewMethodSelect.value = "espresso";
     brewMethodSelect.dispatchEvent(new Event("change"));
   }
 });
 
-// --------------------------
-// Smart Brew Mapping Table
-// --------------------------
+// =====================================================
+// SMART BREW MAPPING TABLE
+// =====================================================
 const brewRecommendations = {
   espresso: { dose: "18-20g", yield: "36-40g", time: "25-30s", grind: "fine" },
   v60: { dose: "15-18g", yield: "250-300ml", time: "2:30-3:30 min", grind: "medium-fine" },
@@ -44,6 +172,7 @@ const brewRecommendations = {
   syphon: { dose: "20g", yield: "300ml", time: "3-4 min", grind: "medium" },
   "cold-brew": { dose: "100g", yield: "1L", time: "12-18 hr", grind: "coarse" }
 };
+
 
 // --------------------------
 // Grinder Numeric Settings
