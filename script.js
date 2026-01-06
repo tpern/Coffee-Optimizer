@@ -212,9 +212,28 @@ function updatePressureProfileFeedback() {
 }
 
 if (pressureProfileSelect) {
-  pressureProfileSelect.addEventListener("change", updatePressureProfileFeedback);
+  pressureProfileSelect.addEventListener(
+    "change",
+    updatePressureProfileFeedback
+  );
 }
-espressoMachineSelect.addEventListener("change", updatePressureProfileFeedback);
+
+if (espressoMachineSelect) {
+  espressoMachineSelect.addEventListener(
+    "change",
+    updatePressureProfileFeedback
+  );
+}
+
+// ==============================
+// TEST EXPORTS (safe for browser)
+// ==============================
+if (typeof module !== "undefined") {
+  module.exports = {
+    PRESSURE_PROFILES,
+    evaluatePressureProfile
+  };
+}
 
 // =====================================================
 // SUBMIT BUTTON — BREW LOGIC ONLY
