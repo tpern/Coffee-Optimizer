@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Coffee Brew Optimizer</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 <div class="container">
 
   <h1>Coffee Brew Optimizer</h1>
 
-  <!-- SECTION 1: Home Barista or Café -->
+  <!-- SECTION 1: User Type -->
   <div class="section">
     <label for="user-type">Are you a Home Barista or a Café?</label>
     <select id="user-type">
@@ -59,7 +59,7 @@
     </select>
 
     <label for="roast-date">Roast Date</label>
-    <input type="date" id="roast-date">
+    <input type="date" id="roast-date" />
 
     <label for="processing">Processing Method</label>
     <select id="processing">
@@ -83,132 +83,84 @@
     </select>
   </div>
 
-<!-- SECTION 3: Brew Method -->
-<div class="section">
-  <h3>Brew Method</h3>
+  <!-- SECTION 3: Brew Method -->
+  <div class="section">
+    <h3>Brew Method</h3>
 
-  <label for="brew-method">Select Brew Method:</label>
-  <select id="brew-method">
-    <option value="">-- Choose --</option>
-    <option value="espresso">Espresso</option>
-    <option value="v60">V60 / Chemex</option>
-    <option value="aeropress">Aeropress</option>
-    <option value="french-press">French Press</option>
-    <option value="turkish">Turkish</option>
-    <option value="moka-pot">Moka Pot</option>
-    <option value="balance-siphon">Balance Siphon</option>
-    <option value="syphon">Syphon</option>
-    <option value="cold-brew">Cold Brew</option>
-  </select>
-
-  <!-- Conditional Espresso Machine Section -->
-  <div id="espresso-machine-section" style="display:none;">
-    <label for="espresso-machine">Choose your Espresso Machine:</label>
-    <select id="espresso-machine">
+    <label for="brew-method">Select Brew Method:</label>
+    <select id="brew-method">
       <option value="">-- Choose --</option>
-      <option value="synesso-mvp-hydra">Synesso MVP Hydra</option>
-      <option value="la-marzocco-linea-mini">La Marzocco Linea Mini</option>
-      <option value="slayer-steam">Slayer Steam</option>
-      <option value="rocket-r58">Rocket R58</option>
-      <option value="fellow-opra">Fellow Opra</option>
+      <option value="espresso">Espresso</option>
+      <option value="v60">V60</option>
+      <option value="chemex">Chemex</option>
+      <option value="aeropress">Aeropress</option>
+      <option value="french-press">French Press</option>
+      <option value="turkish">Turkish</option>
+      <option value="moka-pot">Moka Pot</option>
+      <option value="balance-siphon">Balance Siphon</option>
+      <option value="syphon">Syphon</option>
+      <option value="cold-brew">Cold Brew</option>
     </select>
 
-    <!-- Pressure Profile Selection -->
-    <div id="pressure-profile-section" style="display:none;">
-      <label for="pressure-profile">Pressure Profile</label>
-      <select id="pressure-profile">
-        <option value="">-- Select Pressure Profile --</option>
+    <!-- Espresso-only -->
+    <div id="espresso-machine-section" style="display:none;">
+      <label for="espresso-machine">Espresso Machine</label>
+      <select id="espresso-machine">
+        <option value="">-- Choose --</option>
       </select>
 
-      <div
-        id="pressure-profile-warning"
-        style="font-size: 0.9em; color: #b45309; margin-top: 4px;"
-      ></div>
+      <div id="pressure-profile-section" style="display:none;">
+        <label for="pressure-profile">Pressure Profile</label>
+        <select id="pressure-profile">
+          <option value="">-- Choose pressure profile --</option>
+        </select>
+
+        <div
+          id="pressure-profile-warning"
+          style="font-size:0.9em; margin-top:4px;"
+        ></div>
+      </div>
     </div>
   </div>
-</div>
 
-  
   <!-- SECTION 4: Grinder -->
   <div class="section">
-    <label for="grinder">Select Grinder:</label>
+    <label for="grinder">Grinder</label>
     <select id="grinder">
       <option value="">-- Choose --</option>
-      <option value="mazzer-mini">Mazzer Mini</option>
-      <option value="mazzer-super-jolly">Mazzer Super Jolly</option>
-      <option value="baratza-encore">Baratza Encore</option>
-      <option value="baratza-sette-270">Baratza Sette 270</option>
-      <option value="fellow-ode">Fellow Ode</option>
     </select>
   </div>
 
   <!-- SECTION 5: Water -->
   <div class="section">
-    <label for="water-type">Select Water Type:</label>
+    <label for="water-type">Water Type</label>
     <select id="water-type">
       <option value="">-- Choose --</option>
-      <option value="tap">Tap Water</option>
+      <option value="tap">Tap</option>
       <option value="filtered">Filtered</option>
       <option value="distilled">Distilled</option>
-      <option value="reverse-osmosis">Reverse Osmosis</option>
+      <option value="reverse-osmosis">RO</option>
       <option value="third-wave">Third Wave Water</option>
       <option value="spring">Spring</option>
     </select>
   </div>
 
-  <!-- SUBMIT -->
   <button id="submit-btn">Get Brew Recommendation</button>
 
-  <!-- OUTPUT -->
   <div class="card" id="output"></div>
-
-  <!-- SECTION 6: Taste Feedback -->
-  <div class="section">
-    <h3>Taste Feedback (SCA Standard)</h3>
-
-    <!-- (unchanged SCA inputs – kept exactly as you had them) -->
-    <!-- aroma, flavor, aftertaste, acidity, body, balance, sweetness, overall -->
-    <!-- clean-cup + uniformity kept for future use -->
-
-    <!-- Your existing selects remain here exactly as written -->
-  </div>
-
-  <!-- ============================= -->
-  <!-- NEW: LEARNING & ADMIN TOOLS -->
-  <!-- ============================= -->
-
-  <hr>
 
   <section class="section">
     <h3>Learning Tools</h3>
-
-    <button type="button" onclick="exportLearningData()">
-      Export Learning Data
-    </button>
-
-    <input
-      type="file"
-      id="learning-import"
-      accept="application/json"
-    />
+    <button type="button" onclick="exportLearningData()">Export Learning</button>
+    <input type="file" id="learning-import" accept="application/json" />
   </section>
 
   <section class="section">
-    <h3>Debug & Admin Controls</h3>
-
-    <button type="button" onclick="resetAllLearning()">
-      Reset All Learning
-    </button>
-
-    <button type="button" onclick="resetBrewHistory()">
-      Reset Brew History
-    </button>
-
-    <button type="button" onclick="resetEverything()">
-      Reset Everything
-    </button>
-
-    <div id="debug-output"></div>
+    <h3>Debug & Admin</h3>
+    <button type="button" onclick="resetAllLearning()">Reset All Learning</button>
+    <button type="button" onclick="resetBrewHistory()">Reset Brew History</button>
+    <button type="button" onclick="resetEverything()">Reset Everything</button>
+    <div id="debug-inspector"></div>
   </section>
 
 </div>
