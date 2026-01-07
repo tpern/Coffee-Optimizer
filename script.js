@@ -1,11 +1,19 @@
 // =====================================================
-// ELEMENTS
+// ELEMENTS (Browser only)
 // =====================================================
-const brewMethodSelect = document.getElementById("brew-method");
-const espressoSection = document.getElementById("espresso-machine-section");
-const grinderSelect = document.getElementById("grinder");
-const espressoMachineSelect = document.getElementById("espresso-machine");
-const userTypeSelect = document.getElementById("user-type");
+let brewMethodSelect,
+    espressoSection,
+    grinderSelect,
+    espressoMachineSelect,
+    userTypeSelect;
+
+if (typeof document !== "undefined") {
+  brewMethodSelect = document.getElementById("brew-method");
+  espressoSection = document.getElementById("espresso-machine-section");
+  grinderSelect = document.getElementById("grinder");
+  espressoMachineSelect = document.getElementById("espresso-machine");
+  userTypeSelect = document.getElementById("user-type");
+}
 
 // =====================================================
 // MACHINE CAPABILITIES
@@ -114,11 +122,15 @@ function evaluatePressureProfile(machineId, profileId) {
 // =====================================================
 // SHOW / HIDE ESPRESSO MACHINE SECTION
 // =====================================================
-brewMethodSelect.addEventListener("change", function () {
-  espressoSection.style.display =
-    this.value === "espresso" ? "block" : "none";
-});
-brewMethodSelect.dispatchEvent(new Event("change"));
+if (brewMethodSelect) {
+  brewMethodSelect.addEventListener("change", function () {
+    espressoSection.style.display =
+      this.value === "espresso" ? "block" : "none";
+  });
+
+  // Trigger once on load
+  brewMethodSelect.dispatchEvent(new Event("change"));
+}
 
 // =====================================================
 // USER TYPE LOGIC (HOME vs CAFE)
@@ -133,16 +145,26 @@ function populateSelect(selectEl, values) {
   });
 }
 
-userTypeSelect.addEventListener("change", function () {
-  const isCafe = this.value === "cafe";
-  populateSelect(grinderSelect, isCafe ? CAFE_GRINDERS : HOME_GRINDERS);
-  populateSelect(espressoMachineSelect, isCafe ? CAFE_ESPRESSO_MACHINES : []);
+if (userTypeSelect) {
+  userTypeSelect.addEventListener("change", function () {
+    const isCafe = this.value === "cafe";
 
-  if (isCafe) {
-    brewMethodSelect.value = "espresso";
-    brewMethodSelect.dispatchEvent(new Event("change"));
-  }
-});
+    populateSelect(
+      grinderSelect,
+      isCafe ? CAFE_GRINDERS : HOME_GRINDERS
+    );
+
+    populateSelect(
+      espressoMachineSelect,
+      isCafe ? CAFE_ESPRESSO_MACHINES : []
+    );
+
+    if (isCafe && brewMethodSelect) {
+      brewMethodSelect.value = "espresso";
+      brewMethodSelect.dispatchEvent(new Event("change"));
+    }
+  });
+}
 
 // =====================================================
 // PRESSURE PROFILE UI WIRING (GLOBAL, RUNS ONCE)
@@ -164,20 +186,24 @@ function populatePressureProfiles() {
   });
 }
 
-brewMethodSelect.addEventListener("change", function () {
-  if (!pressureProfileSection) return;
-  pressureProfileSection.style.display = "none";
-  if (pressureProfileWarning) pressureProfileWarning.textContent = "";
-});
-
-espressoMachineSelect.addEventListener("change", function () {
-  if (!pressureProfileSection) return;
-
-  if (!this.value) {
+if (brewMethodSelect) {
+  brewMethodSelect.addEventListener("change", function () {
+    if (!pressureProfileSection) return;
     pressureProfileSection.style.display = "none";
-    return;
-  }
+    if (pressureProfileWarning) pressureProfileWarning.textContent = "";
+  });
+}
 
+if (espressoMachineSelect) {
+  espressoMachineSelect.addEventListener("change", function () {
+    if (!pressureProfileSection) return;
+
+    if (!this.value) {
+      pressureProfileSection.style.display = "none";
+      return;
+    }
+  });
+}
   populatePressureProfiles();
   pressureProfileSection.style.display = "block";
 });
@@ -238,9 +264,17 @@ if (typeof module !== "undefined") {
 // =====================================================
 // SUBMIT BUTTON — BREW LOGIC ONLY
 // =====================================================
-document.getElementById("submit-btn").addEventListener("click", function () {
-  const output = document.getElementById("output");
-  output.innerHTML = "";
+if (typeof document !== "undefined") {
+  const submitBtn = document.getElementById("submit-btn");
 
-  // (your existing brew, learning, and output logic continues here unchanged)
-});
+  if (submitBtn) {
+    submitBtn.addEventListener("click", function () {
+      const output = document.getElementById("output");
+      if (!output) return;
+
+      output.innerHTML = "";
+
+      // (your existing brew, learning, and output logic continues here unchanged)
+    });
+  }
+}
