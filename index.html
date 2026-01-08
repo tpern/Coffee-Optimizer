@@ -145,22 +145,69 @@
     </select>
   </div>
 
-  <button id="submit-btn">Get Brew Recommendation</button>
+  <!-- BUTTON: Get Initial Recipe (MOVED HERE - BEFORE TASTE FEEDBACK) -->
+  <button id="submit-btn">Get Initial Brew Recipe</button>
 
   <div class="card" id="output"></div>
 
+  <!-- SECTION 6: SCA Taste Feedback (AFTER BUTTON) -->
+  <div class="section" id="taste-feedback-section">
+    <h3>Taste Feedback (SCA Scale)</h3>
+    <p style="font-size:0.9em; color:#666; margin-bottom:1em;">
+      After brewing, rate each attribute from 0-10 (5 = neutral, below 5 = deficient, above 5 = excellent)
+    </p>
+
+    <label for="aroma">Aroma (0-10)</label>
+    <input type="number" id="aroma" min="0" max="10" step="0.5" value="5" />
+
+    <label for="flavor">Flavor (0-10)</label>
+    <input type="number" id="flavor" min="0" max="10" step="0.5" value="5" />
+
+    <label for="aftertaste">Aftertaste (0-10)</label>
+    <input type="number" id="aftertaste" min="0" max="10" step="0.5" value="5" />
+
+    <label for="acidity">Acidity (0-10)</label>
+    <input type="number" id="acidity" min="0" max="10" step="0.5" value="5" />
+
+    <label for="body">Body (0-10)</label>
+    <input type="number" id="body" min="0" max="10" step="0.5" value="5" />
+
+    <label for="balance">Balance (0-10)</label>
+    <input type="number" id="balance" min="0" max="10" step="0.5" value="5" />
+
+    <label for="sweetness">Sweetness (0-10)</label>
+    <input type="number" id="sweetness" min="0" max="10" step="0.5" value="5" />
+
+    <label for="overall">Overall (0-10)</label>
+    <input type="number" id="overall" min="0" max="10" step="0.5" value="5" />
+
+    <!-- SECOND BUTTON: Submit Feedback -->
+    <button id="feedback-submit-btn" type="button" style="margin-top:1em;">Submit Feedback & Learn</button>
+  </div>
+
+  <!-- SECTION 7: Learning Tools -->
   <section class="section">
     <h3>Learning Tools</h3>
-    <button type="button" onclick="exportLearningData()">Export Learning</button>
-    <input type="file" id="learning-import" accept="application/json" />
+    <button type="button" onclick="exportLearningData()">Export Learning Data</button>
+    <label for="learning-import" style="display:block; margin-top:0.5em;">
+      Import Learning Data:
+      <input 
+        type="file" 
+        id="learning-import" 
+        accept="application/json"
+        onchange="importLearningData(this.files[0])"
+        style="margin-left:0.5em;"
+      />
+    </label>
   </section>
 
+  <!-- SECTION 8: Debug & Admin -->
   <section class="section">
     <h3>Debug & Admin</h3>
     <button type="button" onclick="resetAllLearning()">Reset All Learning</button>
     <button type="button" onclick="resetBrewHistory()">Reset Brew History</button>
     <button type="button" onclick="resetEverything()">Reset Everything</button>
-    <div id="debug-inspector"></div>
+    <div id="debug-inspector" style="margin-top:1em;"></div>
   </section>
 
 </div>
