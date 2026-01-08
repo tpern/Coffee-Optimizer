@@ -155,3 +155,184 @@ button:hover {
     padding: 0.8rem;
   }
 }
+
+/* ===================================================== */
+/* EXPLANATION CARDS & LEARNING STATUS STYLING */
+/* ===================================================== */
+
+.explanation-card,
+.learning-card,
+.recipe-card {
+  margin: 1.5em 0;
+  padding: 1.5em;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.explanation-card h3,
+.learning-card h3,
+.recipe-card h3 {
+  margin-top: 0;
+  color: #1f2937;
+  font-size: 1.25em;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5em;
+}
+
+/* Recipe Explanation - Collapsible */
+.explanation-card details {
+  margin-top: 1em;
+}
+
+.explanation-card summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.1em;
+  padding: 0.75em;
+  background: #f9fafb;
+  border-radius: 6px;
+  user-select: none;
+}
+
+.explanation-card summary:hover {
+  background: #f3f4f6;
+}
+
+.explanation-content {
+  padding: 1em;
+  margin-top: 0.5em;
+  line-height: 1.6;
+}
+
+/* Extraction Analysis Styling */
+.ratings-summary {
+  background: #f9fafb;
+  padding: 1em;
+  border-radius: 6px;
+  margin: 1em 0;
+}
+
+.diagnosis-box {
+  padding: 1em;
+  border-radius: 6px;
+  margin: 1em 0;
+  font-weight: 500;
+}
+
+.diagnosis-box.diagnosis-under {
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+}
+
+.diagnosis-box.diagnosis-over {
+  background: #fee2e2;
+  border-left: 4px solid #dc2626;
+}
+
+.diagnosis-box.diagnosis-balanced {
+  background: #d1fae5;
+  border-left: 4px solid #10b981;
+}
+
+.why-section {
+  background: #f0f9ff;
+  padding: 1em;
+  border-radius: 6px;
+  margin: 1em 0;
+}
+
+.why-section ul {
+  margin: 0.5em 0 0 0;
+  padding-left: 1.5em;
+}
+
+.why-section li {
+  margin: 0.5em 0;
+}
+
+/* Learning Progress Bar */
+.progress-bar {
+  width: 100%;
+  height: 24px;
+  background: #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 1em 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+  transition: width 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
+.learnings-list {
+  background: #f0fdf4;
+  padding: 1em;
+  border-radius: 6px;
+  margin-top: 1em;
+  border-left: 4px solid #22c55e;
+}
+
+.learnings-list ul {
+  margin: 0.5em 0 0 0;
+  padding-left: 1.5em;
+}
+
+.learnings-list li {
+  margin: 0.5em 0;
+  color: #166534;
+}
+
+/* Learned Adjustments Box */
+.learned-adjustments {
+  background: #f0fdf4;
+  border: 2px solid #22c55e;
+  border-radius: 6px;
+  padding: 1em;
+  margin-top: 1em;
+}
+
+.learned-adjustments h4 {
+  margin-top: 0;
+  color: #166534;
+}
+
+/* Learning Results */
+.learning-results {
+  background: #eff6ff;
+  padding: 1.5em;
+  border-radius: 8px;
+  margin: 1.5em 0;
+  border-left: 4px solid #3b82f6;
+}
+
+.learning-results h3 {
+  margin-top: 0;
+  color: #1e40af;
+}
+
+/* Hide old debug inspector by default */
+#debug-inspector {
+  display: none;
+}
+
+/* Optional: Show debug in dev mode */
+body.debug-mode #debug-inspector {
+  display: block;
+  margin-top: 2em;
+  padding: 1em;
+  background: #f3f4f6;
+  border: 1px dashed #9ca3af;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.85em;
+}
