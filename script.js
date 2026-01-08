@@ -1,3 +1,5 @@
+
+
 // =====================================================
 // ELEMENTS
 // =====================================================
@@ -77,7 +79,6 @@ function evaluatePressureProfile(machineId, profileId) {
 
   const requirements = profile.requires;
 
-  // Check pressure profiling
   if (requirements.pressureProfiling && machine.pressureProfiling !== true) {
     return {
       compatible: false,
@@ -85,7 +86,6 @@ function evaluatePressureProfile(machineId, profileId) {
     };
   }
 
-  // Check flow control
   if (requirements.flowControl && machine.flowControl !== true) {
     return {
       compatible: false,
@@ -93,7 +93,6 @@ function evaluatePressureProfile(machineId, profileId) {
     };
   }
 
-  // Check pre-infusion
   if (requirements.preInfusion && !machine.preInfusion) {
     return {
       compatible: false,
@@ -101,7 +100,6 @@ function evaluatePressureProfile(machineId, profileId) {
     };
   }
 
-  // Soft compatibility warnings
   if (machine.pressureProfiling === "manual" && requirements.pressureProfiling) {
     return {
       compatible: true,
@@ -125,7 +123,6 @@ brewMethodSelect.dispatchEvent(new Event("change"));
 // GRINDER & ESPRESSO MACHINE CATALOGS
 // =====================================================
 
-// ---------- HOME GRINDERS (30+) ----------
 const HOME_GRINDERS = [
   "baratza-encore",
   "baratza-encore-esp",
@@ -158,7 +155,6 @@ const HOME_GRINDERS = [
   "capresso-infinity"
 ];
 
-// ---------- CAFE / PROFESSIONAL GRINDERS (30+) ----------
 const CAFE_GRINDERS = [
   "mazzer-mini",
   "mazzer-super-jolly",
@@ -192,7 +188,6 @@ const CAFE_GRINDERS = [
   "victoria-arduino-mythos"
 ];
 
-// ---------- CAFE ESPRESSO MACHINES (30+) ----------
 const CAFE_ESPRESSO_MACHINES = [
   "la-marzocco-linea-pb",
   "la-marzocco-strada",
@@ -277,9 +272,6 @@ const brewRecommendations = {
   "cold-brew": { dose: "100g", yield: "1L", time: "12-18 hr", grind: "coarse" }
 };
 
-// ------------------------
-// Grinder Numeric Settings
-// ------------------------
 const grinderSettings = {
   "baratza-encore": {
     espresso: 0,
@@ -343,9 +335,9 @@ const grinderSettings = {
   }
 };
 
-// ------------------------
-// STEP 1: SCA → Extraction Diagnosis
-// ------------------------
+// =====================================================
+// SCA DIAGNOSIS ENGINE
+// =====================================================
 const scaWeights = {
   aroma: 0.5,
   flavor: 1.5,
@@ -412,9 +404,197 @@ function diagnoseExtraction(scaFeedback) {
   };
 }
 
-// ------------------------
-// STEP 2: Recipe Adjustment Engine
-// ------------------------
+// =====================================================
+// NEW: EXTRACTION EXPLANATION GENERATOR
+// =====================================================
+function generateExtractionExplanation(scaFeedback, extractionDiagnosis) {
+  const ratings = [];
+  const issues = [];
+  
+  for (const key in scaFeedback) {
+    const val = parseFloat(scaFeedback[key]);
+    if (isNaN(val)) continue;
+    
+    let status = "✓";
+    let label = "good";
+    
+    if (val < 4) {
+      status = "✗";
+      label = "low";
+      issues.push(`${key}: ${val}/10 (${label})`);
+    } else if (val > 7) {
+      status = "✓";
+      label = "excellent";
+    } else if (val >= 4 && val < 5.5) {
+      status = "~";
+      label = "acceptable";
+    }
+    
+    ratings.push(`${status} ${key.charAt(0).toUpperCase() + key.slice(1)}: ${val}/10 (${label})`);
+  }
+  
+  let diagnosisText = "";
+  let explanationText = "";
+  let whyText = "";
+  
+  if (extractionDiagnosis.extractionState === "under") {
+    diagnosisText = "UNDER-EXTRACTED";
+    explanationText = "Coffee didn't spend enough time with water. Not enough flavor compounds dissolved.";
+    whyText = `<p><strong>Why this happened:</strong></p>
+<ul>
+<li>Grind too coarse (water flowed too fast)</li>
+<li>OR brew time too short</li>
+<li>OR water temperature too low</li>
+</ul>`;
+  } else if (extractionDiagnosis.extractionState === "over") {
+    diagnosisText = "OVER-EXTRACTED";
+    explanationText = "Coffee spent too much time with water. Extracted bitter, astringent compounds.";
+    whyText = `<p><strong>Why this happened:</strong></p>
+<ul>
+<li>Grind too fine (water couldn't flow)</li>
+<li>OR brew time too long</li>
+<li>OR water temperature too high</li>
+</ul>`;
+  } else {
+    diagnosisText = "BALANCED";
+    explanationText = "Your extraction is in the sweet spot! Good balance of flavors.";
+    whyText = `<p><strong>Keep doing what you're doing:</strong></p>
+<ul>
+<li>Grind size is appropriate</li>
+<li>Brew time is correct</li>
+<li>Temperature is suitable</li>
+</ul>`;
+  }
+  
+  return `<div class="explanation-card">
+<h3>🔍 EXTRACTION ANALYSIS</h3>
+
+<div class="ratings-summary">
+<p><strong>Your Ratings Summary:</strong></p>
+${ratings.map(r => `<p>${r}</p>`).join('')}
+${issues.length > 0 ? `<p style="margin-top:0.5em;"><strong>Key Issues:</strong> ${issues.join(', ')}</p>` : ''}
+</div>
+
+<div class="diagnosis-box">
+<p><strong>Diagnosis:</strong> <span class="diagnosis-${extractionDiagnosis.extractionState}">${diagnosisText}</span></p>
+<p style="font-size:0.95em; margin-top:0.5em;">${explanationText}</p>
+</div>
+
+${whyText}
+
+<p style="font-size:0.9em; color:#666; margin-top:1em;">
+<strong>Confidence:</strong> ${extractionDiagnosis.confidenceDisplay} (higher = more certain)
+</p>
+</div>`;
+}
+
+// =====================================================
+// NEW: RECIPE EXPLANATION GENERATOR
+// =====================================================
+function generateRecipeExplanation(selections) {
+  const brewMethod = selections.brewMethod;
+  const grinder = selections.grinder;
+  
+  const methodExplanations = {
+    espresso: "High pressure extraction → requires fine grind for 25-30 second shot",
+    v60: "Cone shape → requires medium-fine grind for proper 2:30-3:30 flow rate",
+    chemex: "Thick paper filter → needs medium-coarse grind to prevent clogging",
+    "french-press": "Full immersion → coarse grind prevents sediment in cup",
+    aeropress: "Pressure-assisted → medium grind balances speed and extraction",
+    "moka-pot": "Steam pressure → fine grind similar to espresso but slightly coarser",
+    turkish: "Unfiltered → extra-fine grind creates traditional thick texture",
+    "balance-siphon": "Vacuum brewing → medium grind for clean, tea-like cup",
+    syphon: "Vapor pressure → medium grind highlights delicate flavors",
+    "cold-brew": "12-18 hour immersion → coarse grind prevents over-extraction"
+  };
+  
+  let explanation = `<div class="explanation-card">
+<details open>
+<summary>📖 Why This Recipe?</summary>
+<div class="explanation-content">
+<p><strong>Brew Method:</strong> ${brewMethod.toUpperCase()}</p>
+<p>${methodExplanations[brewMethod] || "Standard brewing parameters for this method."}</p>`;
+  
+  if (grinder && grinderSettings[grinder] && grinderSettings[grinder][brewMethod] !== undefined) {
+    explanation += `<p><strong>Your Grinder:</strong> ${grinder.replace(/-/g, ' ').toUpperCase()}</p>
+<p>Setting ${grinderSettings[grinder][brewMethod]} is our baseline for this method with your grinder.</p>`;
+  }
+  
+  explanation += `</div>
+</details>
+</div>`;
+  
+  return explanation;
+}
+
+// =====================================================
+// NEW: LEARNING STATUS GENERATOR
+// =====================================================
+function generateLearningStatus(selections) {
+  const key = `${selections.grinder}::${selections.brewMethod}`;
+  const model = learningModel[key];
+  
+  if (!model || model.samples === 0) {
+    return `<div class="learning-card">
+<h3>🧠 LEARNING STATUS</h3>
+<div class="progress-bar">
+<div class="progress-fill" style="width: 0%"></div>
+</div>
+<p><strong>Brews with this setup:</strong> 0</p>
+<p style="color:#666; font-size:0.95em;">Start building your personalized model by brewing and rating!</p>
+</div>`;
+  }
+  
+  const progressPercent = Math.min((model.samples / MIN_SAMPLES_TO_LEARN) * 100, 100);
+  const isLearning = model.samples >= MIN_SAMPLES_TO_LEARN;
+  
+  let statusText = "";
+  if (model.samples < MIN_SAMPLES_TO_LEARN) {
+    statusText = `Gathering data (${model.samples}/${MIN_SAMPLES_TO_LEARN} brews needed)`;
+  } else {
+    statusText = `Active learning (${model.samples} brews recorded)`;
+  }
+  
+  let learningsText = "";
+  if (isLearning) {
+    const insights = [];
+    
+    if (Math.abs(model.grindOffset) > 0.5) {
+      const direction = model.grindOffset < 0 ? "finer" : "coarser";
+      insights.push(`Your grinder runs ${Math.abs(model.grindOffset).toFixed(1)} clicks ${direction} than average`);
+    }
+    
+    if (Math.abs(model.timeOffset) > 2) {
+      const direction = model.timeOffset > 0 ? "longer" : "shorter";
+      insights.push(`Your setup needs ${Math.abs(model.timeOffset).toFixed(0)}s ${direction} extraction time`);
+    }
+    
+    if (insights.length === 0) {
+      insights.push("Your setup aligns closely with standard recommendations");
+    }
+    
+    learningsText = `<div class="learnings-list">
+<p><strong>What we've learned about YOUR setup:</strong></p>
+<ul>
+${insights.map(i => `<li>${i}</li>`).join('')}
+</ul>
+</div>`;
+  }
+  
+  return `<div class="learning-card">
+<h3>🧠 LEARNING STATUS</h3>
+<div class="progress-bar">
+<div class="progress-fill" style="width: ${progressPercent}%"></div>
+</div>
+<p><strong>Brews with this setup:</strong> ${model.samples}</p>
+<p><strong>Status:</strong> ${statusText}</p>
+${learningsText}
+</div>`;
+}
+
+// =====================================================
+// RECIPE ADJUSTMENT ENGINE
+// =====================================================
 function adjustRecipe(extractionDiagnosis, selections) {
   if (extractionDiagnosis.extractionState === "balanced") {
     return `<h3>Adjustment for Next Brew</h3>
@@ -441,19 +621,12 @@ function adjustRecipe(extractionDiagnosis, selections) {
 <p><strong>Confidence:</strong> ${extractionDiagnosis.confidenceDisplay}</p>`;
 }
 
-// ------------------------
-// STEP 3: Brew History & Learning Engine
-// ------------------------
+// =====================================================
+// LEARNING ENGINE
+// =====================================================
 let brewHistory = [];
-
-// ------------------------
-// STEP 4: Learning & Personalization Engine
-// ------------------------
 let learningModel = {};
 
-// ------------------------
-// STEP 4a: Learning Activation Gate
-// ------------------------
 const MIN_SAMPLES_TO_LEARN = 3;
 
 function applyLearning(selections, baseGrind, baseTimeSeconds) {
@@ -486,9 +659,6 @@ function applyLearning(selections, baseGrind, baseTimeSeconds) {
   };
 }
 
-// ------------------------
-// STEP 6 + 7: Confidence-Weighted Learning WITH Drift Control
-// ------------------------
 function normalizeConfidence(confidence) {
   const MAX_CONFIDENCE = 3;
   return Math.min(confidence / MAX_CONFIDENCE, 1);
@@ -543,9 +713,9 @@ function updateLearningModel(selections, extractionDiagnosis) {
   model.samples += 1;
 }
 
-// ------------------------
-// STEP 8: Persistence Layer
-// ------------------------
+// =====================================================
+// PERSISTENCE LAYER
+// =====================================================
 const STORAGE_KEYS = {
   history: "coffee_brew_history",
   learning: "coffee_learning_model"
@@ -577,9 +747,9 @@ function persistLearningData() {
   localStorage.setItem(STORAGE_KEYS.learning, JSON.stringify(learningModel));
 }
 
-// ------------------------
-// STEP 9: Learning Reset & Control Layer
-// ------------------------
+// =====================================================
+// LEARNING RESET & CONTROL
+// =====================================================
 function resetLearningFor(selections) {
   const key = `${selections.grinder}::${selections.brewMethod}`;
   if (learningModel[key]) {
@@ -592,43 +762,28 @@ function resetLearningFor(selections) {
 function resetAllLearning() {
   learningModel = {};
   persistLearningData();
-  console.info("All learning reset");
+  alert("All learning data has been reset.");
+  location.reload();
 }
 
 function resetBrewHistory() {
   brewHistory = [];
   persistLearningData();
-  console.info("Brew history reset");
+  alert("Brew history has been reset.");
+  location.reload();
 }
 
 function resetEverything() {
   brewHistory = [];
   learningModel = {};
   persistLearningData();
-  console.info("All data reset");
+  alert("All data has been reset.");
+  location.reload();
 }
 
-// ------------------------
-// STEP 10: Debug / Inspector Output
-// ------------------------
-const DEBUG_MODE = true;
-
-function renderDebugInspector() {
-  if (!DEBUG_MODE) return;
-
-  const inspector = document.getElementById("debug-inspector");
-  if (!inspector) return;
-
-  inspector.innerHTML = `<h3>⚙️ Debug Inspector</h3>
-<h4>Learning Model</h4>
-<pre>${JSON.stringify(learningModel, null, 2)}</pre>
-<h4>Brew History (${brewHistory.length} entries)</h4>
-<pre>${JSON.stringify(brewHistory, null, 2)}</pre>`;
-}
-
-// ------------------------
-// STEP 11: Learning Portability (Export / Import)
-// ------------------------
+// =====================================================
+// LEARNING PORTABILITY
+// =====================================================
 const EXPORT_VERSION = 1;
 
 function exportLearningData() {
@@ -681,6 +836,7 @@ function importLearningData(file) {
 
       console.info("Learning data imported successfully");
       alert("Learning data imported successfully");
+      location.reload();
     } catch (err) {
       console.error("Import failed", err);
       alert("Failed to import learning data");
@@ -690,9 +846,201 @@ function importLearningData(file) {
   reader.readAsText(file);
 }
 
-// ------------------------
-// BUTTON 1: Get Initial Recipe (No Feedback Required)
-// ------------------------
+// =====================================================
+// NEW: EXPLANATION GENERATOR FUNCTIONS
+// =====================================================
+
+function generateExtractionExplanation(scaFeedback, extractionDiagnosis) {
+  const ratings = [];
+  const issues = [];
+  
+  for (const key in scaFeedback) {
+    const val = parseFloat(scaFeedback[key]);
+    if (isNaN(val)) continue;
+    
+    let status = "✓";
+    let label = "good";
+    
+    if (val < 4) {
+      status = "✗";
+      label = "low";
+      issues.push(`${key}: ${val}/10`);
+    } else if (val > 7) {
+      status = "✓";
+      label = "excellent";
+    } else if (val >= 4 && val < 5.5) {
+      status = "~";
+      label = "acceptable";
+    }
+    
+    const keyFormatted = key.charAt(0).toUpperCase() + key.slice(1);
+    ratings.push(`${status} ${keyFormatted}: ${val}/10 (${label})`);
+  }
+  
+  let diagnosisText = "";
+  let explanationText = "";
+  let whyText = "";
+  
+  if (extractionDiagnosis.extractionState === "under") {
+    diagnosisText = "UNDER-EXTRACTED";
+    explanationText = "Coffee didn't spend enough time with water. Not enough flavor compounds dissolved.";
+    whyText = `<div class="why-section">
+<p><strong>Why this happened:</strong></p>
+<ul>
+<li>Grind too coarse (water flowed too fast)</li>
+<li>OR brew time too short</li>
+<li>OR water temperature too low</li>
+</ul>
+</div>`;
+  } else if (extractionDiagnosis.extractionState === "over") {
+    diagnosisText = "OVER-EXTRACTED";
+    explanationText = "Coffee spent too much time with water. Extracted bitter, astringent compounds.";
+    whyText = `<div class="why-section">
+<p><strong>Why this happened:</strong></p>
+<ul>
+<li>Grind too fine (water couldn't flow)</li>
+<li>OR brew time too long</li>
+<li>OR water temperature too high</li>
+</ul>
+</div>`;
+  } else {
+    diagnosisText = "BALANCED";
+    explanationText = "Your extraction is in the sweet spot! Good balance of flavors.";
+    whyText = `<div class="why-section">
+<p><strong>Keep doing what you're doing:</strong></p>
+<ul>
+<li>Grind size is appropriate</li>
+<li>Brew time is correct</li>
+<li>Temperature is suitable</li>
+</ul>
+</div>`;
+  }
+  
+  return `<div class="explanation-card">
+<h3>🔍 EXTRACTION ANALYSIS</h3>
+
+<div class="ratings-summary">
+<p><strong>Your Ratings Summary:</strong></p>
+${ratings.map(r => `<p style="margin:0.25em 0;">${r}</p>`).join('')}
+${issues.length > 0 ? `<p style="margin-top:0.75em; padding:0.5em; background:#fef2f2; border-left:3px solid #dc2626;"><strong>Key Issues:</strong> ${issues.join(', ')}</p>` : ''}
+</div>
+
+<div class="diagnosis-box diagnosis-${extractionDiagnosis.extractionState}">
+<p><strong>Diagnosis:</strong> ${diagnosisText}</p>
+<p style="font-size:0.95em; margin-top:0.5em;">${explanationText}</p>
+</div>
+
+${whyText}
+
+<p style="font-size:0.9em; color:#666; margin-top:1em; padding-top:1em; border-top:1px solid #e5e7eb;">
+<strong>Confidence:</strong> ${extractionDiagnosis.confidenceDisplay}/3.0 (higher = more certain)
+</p>
+</div>`;
+}
+
+function generateRecipeExplanation(selections) {
+  const brewMethod = selections.brewMethod;
+  const grinder = selections.grinder;
+  
+  const methodExplanations = {
+    espresso: "High pressure extraction requires fine grind for 25-30 second shot time",
+    v60: "Cone shape requires medium-fine grind for proper 2:30-3:30 flow rate",
+    chemex: "Thick paper filter needs medium-coarse grind to prevent clogging",
+    "french-press": "Full immersion uses coarse grind to prevent sediment",
+    aeropress: "Pressure-assisted uses medium grind to balance speed and extraction",
+    "moka-pot": "Steam pressure requires fine grind, similar to espresso",
+    turkish: "Unfiltered requires extra-fine grind for traditional texture",
+    "balance-siphon": "Vacuum brewing uses medium grind for clean profile",
+    syphon: "Vapor pressure uses medium grind to highlight delicate flavors",
+    "cold-brew": "Long immersion uses coarse grind to prevent over-extraction"
+  };
+  
+  let explanation = `<div class="explanation-card">
+<details open>
+<summary>📖 Why This Recipe?</summary>
+<div class="explanation-content">
+<p><strong>Brew Method:</strong> ${brewMethod.replace(/-/g, ' ').toUpperCase()}</p>
+<p style="margin-top:0.5em;">${methodExplanations[brewMethod] || "Standard parameters for this method."}</p>`;
+  
+  if (grinder && grinderSettings[grinder] && grinderSettings[grinder][brewMethod] !== undefined) {
+    const grinderName = grinder.replace(/-/g, ' ').toUpperCase();
+    const setting = grinderSettings[grinder][brewMethod];
+    explanation += `<p style="margin-top:1em;"><strong>Your Grinder:</strong> ${grinderName}</p>
+<p>Setting ${setting} is our baseline for this method with your grinder.</p>`;
+  }
+  
+  explanation += `</div>
+</details>
+</div>`;
+  
+  return explanation;
+}
+
+function generateLearningStatus(selections) {
+  const key = `${selections.grinder}::${selections.brewMethod}`;
+  const model = learningModel[key];
+  
+  if (!model || model.samples === 0) {
+    return `<div class="learning-card">
+<h3>🧠 LEARNING STATUS</h3>
+<div class="progress-bar">
+<div class="progress-fill" style="width: 0%"></div>
+</div>
+<p><strong>Brews with this setup:</strong> 0</p>
+<p style="color:#666; font-size:0.95em; margin-top:0.5em;">Start building your personalized model!</p>
+</div>`;
+  }
+  
+  const progressPercent = Math.min((model.samples / MIN_SAMPLES_TO_LEARN) * 100, 100);
+  const isLearning = model.samples >= MIN_SAMPLES_TO_LEARN;
+  
+  let statusText = "";
+  if (model.samples < MIN_SAMPLES_TO_LEARN) {
+    statusText = `Gathering data (${model.samples}/${MIN_SAMPLES_TO_LEARN} brews needed)`;
+  } else {
+    statusText = `Active learning (${model.samples} brews)`;
+  }
+  
+  let learningsText = "";
+  if (isLearning) {
+    const insights = [];
+    
+    if (Math.abs(model.grindOffset) > 0.5) {
+      const direction = model.grindOffset < 0 ? "finer" : "coarser";
+      insights.push(`Your grinder runs ${Math.abs(model.grindOffset).toFixed(1)} clicks ${direction} than baseline`);
+    }
+    
+    if (Math.abs(model.timeOffset) > 2) {
+      const direction = model.timeOffset > 0 ? "longer" : "shorter";
+      insights.push(`Needs ${Math.abs(model.timeOffset).toFixed(0)}s ${direction} extraction time`);
+    }
+    
+    if (insights.length === 0) {
+      insights.push("Your setup aligns with standard recommendations");
+    }
+    
+    learningsText = `<div class="learnings-list">
+<p><strong>What we've learned about YOUR setup:</strong></p>
+<ul>
+${insights.map(i => `<li>${i}</li>`).join('')}
+</ul>
+</div>`;
+  }
+  
+  return `<div class="learning-card">
+<h3>🧠 LEARNING STATUS</h3>
+<div class="progress-bar">
+<div class="progress-fill" style="width: ${progressPercent}%"></div>
+</div>
+<p><strong>Brews with this setup:</strong> ${model.samples}</p>
+<p><strong>Status:</strong> ${statusText}</p>
+${learningsText}
+</div>`;
+}
+
+// =====================================================
+// BUTTON 1: GET INITIAL RECIPE
+// =====================================================
 document.getElementById("submit-btn").addEventListener("click", function () {
   const output = document.getElementById("output");
 
@@ -702,7 +1050,6 @@ document.getElementById("submit-btn").addEventListener("click", function () {
     grinder: document.getElementById("grinder").value
   };
 
-  // Validate required fields
   if (!selections.brewMethod || !selections.grinder) {
     output.innerHTML = `<p style="color:#b91c1c;">Please select a brew method and grinder first.</p>`;
     return;
@@ -731,8 +1078,8 @@ document.getElementById("submit-btn").addEventListener("click", function () {
     baseGrindValue = grinderSettings[selections.grinder][selections.brewMethod];
   }
 
-  // Apply any existing learning
-  let recipeHtml = `<h3>Initial Brew Recipe</h3>`;
+  let recipeHtml = `<div class="recipe-card">
+<h3>Your Initial Recipe</h3>`;
   
   if (brewRec) {
     recipeHtml += `<p><strong>Dose:</strong> ${brewRec.dose}</p>
@@ -745,28 +1092,33 @@ document.getElementById("submit-btn").addEventListener("click", function () {
     recipeHtml += `<p><strong>Grinder Setting:</strong> ${baseGrindValue}</p>`;
   }
 
-  // Check if learning exists for this combo
   if (baseGrindValue !== null && baseTimeSeconds !== null) {
     const learnedResult = applyLearning(selections, baseGrindValue, baseTimeSeconds);
     
     if (learnedResult.learningApplied) {
-      recipeHtml += `<h4 style="margin-top:1em;">🎯 Personalized Adjustments</h4>
-<p><strong>Learned Grind:</strong> ${learnedResult.grind}</p>
+      recipeHtml += `<div class="learned-adjustments">
+<h4>🎯 Personalized Adjustments</h4>
+<p><strong>Learned Grind:</strong> ${learnedResult.grind.toFixed(1)}</p>
 <p><strong>Learned Time:</strong> ${learnedResult.time}s</p>
-<p style="font-size:0.9em; color:#15803d;">Based on ${learningModel[`${selections.grinder}::${selections.brewMethod}`].samples} previous brews</p>`;
-    } else {
-      recipeHtml += `<p style="font-size:0.9em; color:#666; margin-top:1em;">${learnedResult.reason}</p>`;
+<p style="font-size:0.9em; color:#15803d;">Based on ${learningModel[`${selections.grinder}::${selections.brewMethod}`].samples} previous brews</p>
+</div>`;
     }
   }
 
-  recipeHtml += `<p style="margin-top:1em; font-style:italic;">Brew this recipe, then rate it below to help improve future recommendations.</p>`;
+  recipeHtml += `</div>`;
 
-  output.innerHTML = recipeHtml;
+  const explanationHtml = generateRecipeExplanation(selections);
+  const learningStatusHtml = generateLearningStatus(selections);
+
+  recipeHtml += `<p style="margin-top:1.5em; padding:1em; background:#f0f9ff; border-left:4px solid #0ea5e9; font-style:italic;">
+Brew this recipe, then rate it below to help improve future recommendations.</p>`;
+
+  output.innerHTML = recipeHtml + explanationHtml + learningStatusHtml;
 });
 
-// ------------------------
-// BUTTON 2: Submit Feedback & Learn
-// ------------------------
+// =====================================================
+// BUTTON 2: SUBMIT FEEDBACK & LEARN
+// =====================================================
 document.getElementById("feedback-submit-btn").addEventListener("click", function () {
   const output = document.getElementById("output");
 
@@ -776,9 +1128,8 @@ document.getElementById("feedback-submit-btn").addEventListener("click", functio
     grinder: document.getElementById("grinder").value
   };
 
-  // Validate required fields
   if (!selections.brewMethod || !selections.grinder) {
-    output.innerHTML = `<p style="color:#b91c1c;">Please get an initial recipe first using the button above.</p>`;
+    output.innerHTML = `<p style="color:#b91c1c;">Please get an initial recipe first.</p>`;
     return;
   }
 
@@ -793,9 +1144,16 @@ document.getElementById("feedback-submit-btn").addEventListener("click", functio
     overall: document.getElementById("overall").value
   };
 
-  const extractionDiagnosis = diagnoseExtraction(scaFeedback);
+  const hasRatings = Object.values(scaFeedback).some(val => val !== "");
 
+  if (!hasRatings) {
+    output.innerHTML = `<p style="color:#b91c1c;">Please rate at least one attribute before submitting.</p>`;
+    return;
+  }
+
+  const extractionDiagnosis = diagnoseExtraction(scaFeedback);
   const adjustmentAdvice = adjustRecipe(extractionDiagnosis, selections);
+  const extractionExplanation = generateExtractionExplanation(scaFeedback, extractionDiagnosis);
 
   brewHistory.push({
     selections,
@@ -805,9 +1163,7 @@ document.getElementById("feedback-submit-btn").addEventListener("click", functio
   });
 
   updateLearningModel(selections, extractionDiagnosis);
-
   persistLearningData();
-  renderDebugInspector();
 
   let baseGrindValue = null;
   let baseTimeSeconds = null;
@@ -833,28 +1189,33 @@ document.getElementById("feedback-submit-btn").addEventListener("click", functio
   let learningHtml = "";
   if (baseGrindValue !== null && baseTimeSeconds !== null) {
     const learnedResult = applyLearning(selections, baseGrindValue, baseTimeSeconds);
+    
+    const key = `${selections.grinder}::${selections.brewMethod}`;
+    const samplesNeeded = learningModel[key] ? MIN_SAMPLES_TO_LEARN - learningModel[key].samples : MIN_SAMPLES_TO_LEARN;
 
-    learningHtml = `<h3>Personalized Learning Layer</h3>
+    learningHtml = `<div class="learning-results">
+<h3>Personalized Learning Layer</h3>
 <p><strong>Status:</strong> ${learnedResult.reason}</p>
 <p><strong>Base Grind:</strong> ${baseGrindValue}</p>
 <p><strong>Base Time:</strong> ${baseTimeSeconds}s</p>
 ${
   learnedResult.learningApplied
-    ? `<p><strong>Learned Grind:</strong> ${learnedResult.grind}</p>
+    ? `<p><strong>Learned Grind:</strong> ${learnedResult.grind.toFixed(1)}</p>
 <p><strong>Learned Time:</strong> ${learnedResult.time}s</p>`
-    : `<p><em>Learning not yet applied</em></p>`
-}`;
+    : `<p><em>Learning not yet applied (need ${samplesNeeded} more brews)</em></p>`
+}
+</div>`;
   }
 
-  output.innerHTML = adjustmentAdvice + learningHtml;
-  
-  // Scroll to output
+  const learningStatusHtml = generateLearningStatus(selections);
+
+  output.innerHTML = extractionExplanation + adjustmentAdvice + learningHtml + learningStatusHtml;
   output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
 
 
 // =====================================================
-// PRESSURE PROFILE UI WIRING
+// PRESSURE PROFILE UI WIRING (UNCHANGED)
 // =====================================================
 const pressureProfileSelect = document.getElementById("pressure-profile");
 const pressureProfileSection = document.getElementById("pressure-profile-section");
@@ -875,21 +1236,25 @@ function populatePressureProfiles() {
 brewMethodSelect.addEventListener("change", function () {
   const isEspresso = this.value === "espresso";
   espressoSection.style.display = isEspresso ? "block" : "none";
-  pressureProfileSection.style.display = "none";
-  pressureProfileWarning.textContent = "";
+  if (pressureProfileSection) pressureProfileSection.style.display = "none";
+  if (pressureProfileWarning) pressureProfileWarning.textContent = "";
 });
 
-espressoMachineSelect.addEventListener("change", function () {
-  if (!this.value) {
-    pressureProfileSection.style.display = "none";
-    return;
-  }
+if (espressoMachineSelect) {
+  espressoMachineSelect.addEventListener("change", function () {
+    if (!this.value) {
+      if (pressureProfileSection) pressureProfileSection.style.display = "none";
+      return;
+    }
 
-  populatePressureProfiles();
-  pressureProfileSection.style.display = "block";
-});
+    populatePressureProfiles();
+    if (pressureProfileSection) pressureProfileSection.style.display = "block";
+  });
+}
 
 function updatePressureProfileFeedback() {
+  if (!pressureProfileWarning) return;
+  
   const machineId = espressoMachineSelect.value;
   const profileId = pressureProfileSelect.value;
 
@@ -916,5 +1281,10 @@ function updatePressureProfileFeedback() {
   pressureProfileWarning.style.color = "#15803d";
 }
 
-pressureProfileSelect.addEventListener("change", updatePressureProfileFeedback);
-espressoMachineSelect.addEventListener("change", updatePressureProfileFeedback);
+if (pressureProfileSelect) {
+  pressureProfileSelect.addEventListener("change", updatePressureProfileFeedback);
+}
+
+if (espressoMachineSelect) {
+  espressoMachineSelect.addEventListener("change", updatePressureProfileFeedback);
+}
