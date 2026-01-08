@@ -691,7 +691,7 @@ function importLearningData(file) {
 }
 
 // ------------------------
-// Submit Button Listener
+// BUTTON 1: Get Initial Recipe (No Feedback Required)
 // ------------------------
 document.getElementById("submit-btn").addEventListener("click", function () {
   const output = document.getElementById("output");
@@ -701,6 +701,86 @@ document.getElementById("submit-btn").addEventListener("click", function () {
     brewMethod: document.getElementById("brew-method").value,
     grinder: document.getElementById("grinder").value
   };
+
+  // Validate required fields
+  if (!selections.brewMethod || !selections.grinder) {
+    output.innerHTML = `<p style="color:#b91c1c;">Please select a brew method and grinder first.</p>`;
+    return;
+  }
+
+  const brewRec = brewRecommendations[selections.brewMethod];
+  
+  let baseGrindValue = null;
+  let baseTimeSeconds = null;
+
+  if (brewRec) {
+    const baseTime = brewRec.time;
+    if (baseTime.includes("s")) {
+      baseTimeSeconds = parseInt(baseTime);
+    } else if (baseTime.includes(":")) {
+      const parts = baseTime.split(":");
+      baseTimeSeconds = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+    }
+  }
+
+  if (
+    selections.grinder &&
+    grinderSettings[selections.grinder] &&
+    grinderSettings[selections.grinder][selections.brewMethod] !== undefined
+  ) {
+    baseGrindValue = grinderSettings[selections.grinder][selections.brewMethod];
+  }
+
+  // Apply any existing learning
+  let recipeHtml = `<h3>Initial Brew Recipe</h3>`;
+  
+  if (brewRec) {
+    recipeHtml += `<p><strong>Dose:</strong> ${brewRec.dose}</p>
+<p><strong>Yield:</strong> ${brewRec.yield}</p>
+<p><strong>Time:</strong> ${brewRec.time}</p>
+<p><strong>Grind:</strong> ${brewRec.grind}</p>`;
+  }
+
+  if (baseGrindValue !== null) {
+    recipeHtml += `<p><strong>Grinder Setting:</strong> ${baseGrindValue}</p>`;
+  }
+
+  // Check if learning exists for this combo
+  if (baseGrindValue !== null && baseTimeSeconds !== null) {
+    const learnedResult = applyLearning(selections, baseGrindValue, baseTimeSeconds);
+    
+    if (learnedResult.learningApplied) {
+      recipeHtml += `<h4 style="margin-top:1em;">🎯 Personalized Adjustments</h4>
+<p><strong>Learned Grind:</strong> ${learnedResult.grind}</p>
+<p><strong>Learned Time:</strong> ${learnedResult.time}s</p>
+<p style="font-size:0.9em; color:#15803d;">Based on ${learningModel[`${selections.grinder}::${selections.brewMethod}`].samples} previous brews</p>`;
+    } else {
+      recipeHtml += `<p style="font-size:0.9em; color:#666; margin-top:1em;">${learnedResult.reason}</p>`;
+    }
+  }
+
+  recipeHtml += `<p style="margin-top:1em; font-style:italic;">Brew this recipe, then rate it below to help improve future recommendations.</p>`;
+
+  output.innerHTML = recipeHtml;
+});
+
+// ------------------------
+// BUTTON 2: Submit Feedback & Learn
+// ------------------------
+document.getElementById("feedback-submit-btn").addEventListener("click", function () {
+  const output = document.getElementById("output");
+
+  const selections = {
+    userType: document.getElementById("user-type").value,
+    brewMethod: document.getElementById("brew-method").value,
+    grinder: document.getElementById("grinder").value
+  };
+
+  // Validate required fields
+  if (!selections.brewMethod || !selections.grinder) {
+    output.innerHTML = `<p style="color:#b91c1c;">Please get an initial recipe first using the button above.</p>`;
+    return;
+  }
 
   const scaFeedback = {
     aroma: document.getElementById("aroma").value,
@@ -767,7 +847,11 @@ ${
   }
 
   output.innerHTML = adjustmentAdvice + learningHtml;
+  
+  // Scroll to output
+  output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
+
 
 // =====================================================
 // PRESSURE PROFILE UI WIRING
