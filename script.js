@@ -1427,3 +1427,91 @@ if (pressureProfileSelect) {
 if (espressoMachineSelect) {
   espressoMachineSelect.addEventListener("change", updatePressureProfileFeedback);
 }
+
+// =====================================================
+// UI HANDLERS FOR FARMER CODE & PRIVACY
+// =====================================================
+
+// Update access level display on page load
+(function updateAccessLevelDisplay() {
+  const displayElement = document.getElementById("current-access-level");
+  if (displayElement) {
+    const level = checkAccessLevel();
+    displayElement.textContent = level.charAt(0).toUpperCase() + level.slice(1);
+    
+    if (level === "farmer") {
+      displayElement.style.color = "#15803d";
+      displayElement.style.fontWeight = "600";
+    } else if (level === "pro") {
+      displayElement.style.color = "#2563eb";
+      displayElement.style.fontWeight = "600";
+    }
+  }
+})();
+
+// Handle farmer code submission
+function handleFarmerCodeSubmit() {
+  const input = document.getElementById("farmer-code-input");
+  const messageDiv = document.getElementById("farmer-code-message");
+  const code = input.value.trim();
+  
+  if (!code) {
+    messageDiv.innerHTML = `<p style="color:#dc2626;">Please enter a code</p>`;
+    return;
+  }
+  
+  const validation = validateFarmerCode(code);
+  
+  if (validation.valid) {
+    if (activateFarmerAccess(code)) {
+      messageDiv.innerHTML = `<p style="color:#15803d;">✓ Farmer access activated! ${validation.description}</p>`;
+      input.value = "";
+      
+      // Update display
+      const displayElement = document.getElementById("current-access-level");
+      if (displayElement) {
+        displayElement.textContent = "Farmer";
+        displayElement.style.color = "#15803d";
+        displayElement.style.fontWeight = "600";
+      }
+      
+      // Reload page to apply new permissions
+      setTimeout(() => location.reload(), 2000);
+    }
+  } else {
+    messageDiv.innerHTML = `<p style="color:#dc2626;">✗ ${validation.message}</p>`;
+  }
+}
+
+// Load current privacy settings into checkboxes
+(function loadPrivacySettings() {
+  const termsCheckbox = document.getElementById("consent-terms");
+  const dataSharingCheckbox = document.getElementById("consent-data-sharing");
+  const analyticsCheckbox = document.getElementById("consent-analytics");
+  
+  if (termsCheckbox) termsCheckbox.checked = privacyConsent.agreedToTerms;
+  if (dataSharingCheckbox) dataSharingCheckbox.checked = privacyConsent.dataSharing;
+  if (analyticsCheckbox) analyticsCheckbox.checked = privacyConsent.analytics;
+})();
+
+// Save privacy settings
+function savePrivacySettings() {
+  const termsCheckbox = document.getElementById("consent-terms");
+  const dataSharingCheckbox = document.getElementById("consent-data-sharing");
+  const analyticsCheckbox = document.getElementById("consent-analytics");
+  const messageDiv = document.getElementById("privacy-message");
+  
+  const newPreferences = {
+    agreedToTerms: termsCheckbox.checked,
+    dataSharing: dataSharingCheckbox.checked,
+    analytics: analyticsCheckbox.checked
+  };
+  
+  savePrivacyConsent(newPreferences);
+  
+  messageDiv.innerHTML = `<p style="color:#15803d;">✓ Privacy settings saved</p>`;
+  
+  setTimeout(() => {
+    messageDiv.innerHTML = "";
+  }, 3000);
+}
