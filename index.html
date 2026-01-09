@@ -26,19 +26,85 @@
     <h3>Coffee Details</h3>
 
     <label for="origin">Origin</label>
-    <select id="origin">
-      <option value="">-- Choose --</option>
-      <option value="Ethiopia">Ethiopia</option>
-      <option value="Kenya">Kenya</option>
-      <option value="Colombia">Colombia</option>
-      <option value="Brazil">Brazil</option>
-      <option value="Guatemala">Guatemala</option>
-      <option value="Costa-rica">Costa Rica</option>
-      <option value="Panama">Panama</option>
-      <option value="Peru">Peru</option>
-      <option value="Mexico">Mexico</option>
-    </select>
+<select id="origin">
+  <option value="">-- Choose --</option>
+  <optgroup label="Africa">
+    <option value="burundi">Burundi</option>
+    <option value="ethiopia">Ethiopia</option>
+    <option value="kenya">Kenya</option>
+    <option value="malawi">Malawi</option>
+    <option value="rwanda">Rwanda</option>
+    <option value="tanzania">Tanzania</option>
+    <option value="uganda">Uganda</option>
+    <option value="zambia">Zambia</option>
+    <option value="zimbabwe">Zimbabwe</option>
+    <option value="democratic-republic-congo">Democratic Republic of Congo</option>
+    <option value="cameroon">Cameroon</option>
+    <option value="ivory-coast">Ivory Coast</option>
+    <option value="madagascar">Madagascar</option>
+  </optgroup>
+  <optgroup label="Asia & Oceania">
+    <option value="china-yunnan">China (Yunnan)</option>
+    <option value="india">India</option>
+    <option value="indonesia-sumatra">Indonesia (Sumatra)</option>
+    <option value="indonesia-java">Indonesia (Java)</option>
+    <option value="indonesia-sulawesi">Indonesia (Sulawesi)</option>
+    <option value="indonesia-bali">Indonesia (Bali)</option>
+    <option value="indonesia-flores">Indonesia (Flores)</option>
+    <option value="papua-new-guinea">Papua New Guinea</option>
+    <option value="thailand">Thailand</option>
+    <option value="vietnam">Vietnam</option>
+    <option value="laos">Laos</option>
+    <option value="myanmar">Myanmar</option>
+    <option value="philippines">Philippines</option>
+    <option value="timor-leste">Timor-Leste</option>
+    <option value="australia">Australia</option>
+    <option value="hawaii">Hawaii</option>
+  </optgroup>
+  <optgroup label="Middle East">
+    <option value="yemen">Yemen</option>
+    <option value="saudi-arabia">Saudi Arabia</option>
+  </optgroup>
+  <optgroup label="Central America">
+    <option value="belize">Belize</option>
+    <option value="costa-rica">Costa Rica</option>
+    <option value="el-salvador">El Salvador</option>
+    <option value="guatemala">Guatemala</option>
+    <option value="honduras">Honduras</option>
+    <option value="nicaragua">Nicaragua</option>
+    <option value="panama">Panama</option>
+  </optgroup>
+  <optgroup label="South America">
+    <option value="bolivia">Bolivia</option>
+    <option value="brazil">Brazil</option>
+    <option value="colombia">Colombia</option>
+    <option value="ecuador">Ecuador</option>
+    <option value="peru">Peru</option>
+    <option value="venezuela">Venezuela</option>
+  </optgroup>
+  <optgroup label="North America & Caribbean">
+    <option value="mexico">Mexico</option>
+    <option value="jamaica">Jamaica</option>
+    <option value="cuba">Cuba</option>
+    <option value="dominican-republic">Dominican Republic</option>
+    <option value="haiti">Haiti</option>
+    <option value="puerto-rico">Puerto Rico</option>
+  </optgroup>
+  <optgroup label="Blends">
+    <option value="blend-custom">Custom Blend (specify below)</option>
+    <option value="blend-espresso">Espresso Blend</option>
+    <option value="blend-breakfast">Breakfast Blend</option>
+    <option value="blend-house">House Blend</option>
+  </optgroup>
+</select>
 
+<!-- NEW: Blend Details Input (only shows if blend selected) -->
+<div id="blend-details-section" style="display:none; margin-top:0.5em;">
+  <label for="blend-details">Blend Details (optional)</label>
+  <input type="text" id="blend-details" placeholder="E.g., 60% Brazil, 40% Ethiopia" />
+</div>
+
+    
     <label for="altitude">Altitude</label>
     <select id="altitude">
       <option value="">-- Choose --</option>
@@ -48,31 +114,126 @@
       <option value="1800m+">1800m+</option>
     </select>
 
-    <label for="varietal">Varietal</label>
-    <select id="varietal">
-      <option value="">-- Choose --</option>
-      <option value="heirloom">Heirloom</option>
-      <option value="typica">Typica</option>
-      <option value="caturra">Caturra</option>
-      <option value="bourbon">Bourbon</option>
-      <option value="pacamara">Pacamara</option>
-    </select>
-
+   <label for="varietal">Varietal</label>
+<select id="varietal">
+  <option value="">-- Choose --</option>
+  <optgroup label="Arabica - Ethiopian Heirlooms">
+    <option value="heirloom-ethiopian">Ethiopian Heirloom</option>
+    <option value="gesha-geisha">Gesha/Geisha</option>
+    <option value="sidamo">Sidamo</option>
+    <option value="yirgacheffe">Yirgacheffe</option>
+  </optgroup>
+  <optgroup label="Arabica - Bourbon Family">
+    <option value="bourbon">Bourbon (Red)</option>
+    <option value="yellow-bourbon">Yellow Bourbon</option>
+    <option value="pink-bourbon">Pink Bourbon</option>
+    <option value="orange-bourbon">Orange Bourbon</option>
+    <option value="tekisic">Tekisic</option>
+    <option value="jackson">Jackson</option>
+  </optgroup>
+  <optgroup label="Arabica - Typica Family">
+    <option value="typica">Typica</option>
+    <option value="java">Java</option>
+    <option value="maragogype">Maragogype</option>
+    <option value="blue-mountain">Blue Mountain</option>
+    <option value="kona">Kona</option>
+    <option value="pacas">Pacas</option>
+    <option value="villa-sarchi">Villa Sarchi</option>
+  </optgroup>
+  <optgroup label="Arabica - Caturra Family">
+    <option value="caturra">Caturra (Red)</option>
+    <option value="yellow-caturra">Yellow Caturra</option>
+    <option value="catuai">Catuai</option>
+    <option value="yellow-catuai">Yellow Catuai</option>
+    <option value="red-catuai">Red Catuai</option>
+  </optgroup>
+  <optgroup label="Arabica - Hybrid Cultivars">
+    <option value="mundo-novo">Mundo Novo</option>
+    <option value="pacamara">Pacamara</option>
+    <option value="maracaturra">Maracaturra</option>
+    <option value="maragogype">Maragogype</option>
+  </optgroup>
+  <optgroup label="Arabica - Modern Hybrids">
+    <option value="sl28">SL-28</option>
+    <option value="sl34">SL-34</option>
+    <option value="ruiru-11">Ruiru 11</option>
+    <option value="batian">Batian</option>
+    <option value="k7">K7</option>
+    <option value="catimor">Catimor</option>
+    <option value="sarchimor">Sarchimor</option>
+    <option value="iapar-59">IAPAR 59</option>
+    <option value="icatu">Icatu</option>
+  </optgroup>
+  <optgroup label="Arabica - F1 Hybrids">
+    <option value="centroamericano">Centroamericano</option>
+    <option value="starmaya">Starmaya</option>
+    <option value="casiopea">Casiopea</option>
+    <option value="evaluna">Evaluna</option>
+  </optgroup>
+  <optgroup label="Robusta & Liberica">
+    <option value="robusta">Robusta (Canephora)</option>
+    <option value="liberica">Liberica</option>
+    <option value="excelsa">Excelsa</option>
+  </optgroup>
+  <optgroup label="Rare & Experimental">
+    <option value="eugenioides">Eugenioides</option>
+    <option value="laurina">Laurina (Bourbon Pointu)</option>
+    <option value="aramosa">Aramosa</option>
+    <option value="sudanrume">Sudan Rume</option>
+  </optgroup>
+</select>
+    
     <label for="roast-date">Roast Date</label>
     <input type="date" id="roast-date" />
 
     <label for="processing">Processing Method</label>
-    <select id="processing">
-      <option value="">-- Choose --</option>
-      <option value="washed">Washed</option>
-      <option value="natural">Natural</option>
-      <option value="honey">Honey</option>
-      <option value="wet-hulled">Wet Hulled</option>
-      <option value="pulped-natural">Pulped Natural</option>
-      <option value="anaerobic">Anaerobic</option>
-      <option value="semi-washed">Semi-Washed</option>
-    </select>
-
+<select id="processing">
+  <option value="">-- Choose --</option>
+  <optgroup label="Traditional Methods">
+    <option value="washed">Washed (Wet Processed)</option>
+    <option value="natural">Natural (Dry Processed)</option>
+    <option value="honey">Honey Process</option>
+    <option value="white-honey">White Honey</option>
+    <option value="yellow-honey">Yellow Honey</option>
+    <option value="red-honey">Red Honey</option>
+    <option value="black-honey">Black Honey</option>
+    <option value="pulped-natural">Pulped Natural</option>
+    <option value="semi-washed">Semi-Washed (Wet-Hulled/Giling Basah)</option>
+  </optgroup>
+  <optgroup label="Fermentation Methods">
+    <option value="anaerobic">Anaerobic Fermentation</option>
+    <option value="aerobic">Aerobic Fermentation</option>
+    <option value="carbonic-maceration">Carbonic Maceration</option>
+    <option value="lactic-fermentation">Lactic Acid Fermentation</option>
+    <option value="koji-fermentation">Koji Fermentation</option>
+    <option value="yeast-inoculation">Yeast Inoculation</option>
+    <option value="extended-fermentation">Extended Fermentation</option>
+  </optgroup>
+  <optgroup label="Co-Fermentation">
+    <option value="coferment-fruit">Co-Ferment with Fruit</option>
+    <option value="coferment-spices">Co-Ferment with Spices</option>
+    <option value="coferment-florals">Co-Ferment with Florals</option>
+    <option value="coferment-wine-yeast">Co-Ferment with Wine Yeast</option>
+    <option value="coferment-custom">Co-Ferment Custom</option>
+  </optgroup>
+  <optgroup label="Hybrid & Experimental">
+    <option value="double-washed">Double Washed</option>
+    <option value="double-anaerobic">Double Anaerobic</option>
+    <option value="thermal-shock">Thermal Shock</option>
+    <option value="infused">Infused Processing</option>
+    <option value="mossto">Mossto Process</option>
+    <option value="daterra-natural">Daterra Natural</option>
+  </optgroup>
+  <optgroup label="Drying Methods">
+    <option value="sun-dried">Sun Dried</option>
+    <option value="shade-dried">Shade Dried</option>
+    <option value="mechanical-dried">Mechanical Dried</option>
+    <option value="greenhouse-dried">Greenhouse Dried</option>
+    <option value="african-beds">African Raised Beds</option>
+    <option value="patio-dried">Patio Dried</option>
+  </optgroup>
+</select>
+    
     <label for="roast-level">Roast Level</label>
     <select id="roast-level">
       <option value="">-- Choose --</option>
