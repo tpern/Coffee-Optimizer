@@ -345,6 +345,49 @@
   <button id="feedback-submit-btn" type="button" style="margin-top:1em;">Submit Feedback & Learn</button>
 </div>
 
+<!-- NEW SECTION: Account & Access -->
+<section class="section">
+  <h3>Account & Access</h3>
+  
+  <!-- Access Level Display -->
+  <div id="access-level-display" style="padding:1em; background:#f0f9ff; border-radius:6px; margin-bottom:1em;">
+    <p><strong>Access Level:</strong> <span id="current-access-level">Free</span></p>
+  </div>
+  
+  <!-- Farmer Code Entry -->
+  <div style="margin-bottom:1em;">
+    <label for="farmer-code-input">Have a Farmer Access Code?</label>
+    <input type="text" id="farmer-code-input" placeholder="Enter code" style="margin-right:0.5em;" />
+    <button type="button" onclick="handleFarmerCodeSubmit()">Activate</button>
+    <div id="farmer-code-message" style="margin-top:0.5em; font-size:0.9em;"></div>
+  </div>
+  
+  <!-- Privacy Settings -->
+  <details style="margin-top:1em;">
+    <summary style="cursor:pointer; font-weight:600;">Privacy Settings</summary>
+    <div style="padding:1em; background:#f9fafb; margin-top:0.5em; border-radius:6px;">
+      <label style="display:block; margin:0.5em 0;">
+        <input type="checkbox" id="consent-terms" />
+        I agree to the Terms of Service
+      </label>
+      
+      <label style="display:block; margin:0.5em 0;">
+        <input type="checkbox" id="consent-data-sharing" />
+        Share anonymized brew data to improve global recommendations (Pro/Farmer only)
+      </label>
+      
+      <label style="display:block; margin:0.5em 0;">
+        <input type="checkbox" id="consent-analytics" />
+        Allow anonymous usage analytics
+      </label>
+      
+      <button type="button" onclick="savePrivacySettings()" style="margin-top:1em;">Save Privacy Settings</button>
+      <div id="privacy-message" style="margin-top:0.5em; font-size:0.9em;"></div>
+    </div>
+  </details>
+</section>
+
+<!-- SECTION 7: Learning Tools (your existing section) -->
   
   <!-- SECTION 7: Learning Tools -->
   <section class="section">
