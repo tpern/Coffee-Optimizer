@@ -37,6 +37,64 @@ const MACHINE_CAPABILITIES = {
 };
 
 // =====================================================
+// FARMER ACCESS CODE SYSTEM
+// =====================================================
+const FARMER_CODES = {
+  "FARMER2024": { valid: true, expiresAt: null, usedBy: null, description: "General farmer access" },
+  "COOP-RWANDA-001": { valid: true, expiresAt: null, usedBy: null, description: "Rwanda Co-op" },
+  "COOP-ETHIOPIA-001": { valid: true, expiresAt: null, usedBy: null, description: "Ethiopia Co-op" }
+  // Add more codes as needed
+};
+
+// User access level (stored in localStorage)
+let userAccessLevel = localStorage.getItem("userAccessLevel") || "free";
+let userFarmerCode = localStorage.getItem("userFarmerCode") || null;
+
+function validateFarmerCode(code) {
+  const entry = FARMER_CODES[code.toUpperCase()];
+  
+  if (!entry) {
+    return { valid: false, message: "Invalid code" };
+  }
+  
+  if (!entry.valid) {
+    return { valid: false, message: "Code has been deactivated" };
+  }
+  
+  if (entry.usedBy && entry.usedBy !== userFarmerCode) {
+    return { valid: false, message: "Code already used by another user" };
+  }
+  
+  if (entry.expiresAt && new Date() > new Date(entry.expiresAt)) {
+    return { valid: false, message: "Code has expired" };
+  }
+  
+  return { valid: true, message: "Valid farmer code!", description: entry.description };
+}
+
+function activateFarmerAccess(code) {
+  const validation = validateFarmerCode(code);
+  
+  if (validation.valid) {
+    userAccessLevel = "farmer";
+    userFarmerCode = code.toUpperCase();
+    localStorage.setItem("userAccessLevel", "farmer");
+    localStorage.setItem("userFarmerCode", code.toUpperCase());
+    
+    // Mark code as used (in real app, this would update server)
+    FARMER_CODES[code.toUpperCase()].usedBy = code.toUpperCase();
+    
+    return true;
+  }
+  
+  return false;
+}
+
+function checkAccessLevel() {
+  return userAccessLevel;
+}
+
+// =====================================================
 // PRESSURE PROFILE DEFINITIONS
 // =====================================================
 const PRESSURE_PROFILES = {
@@ -255,6 +313,17 @@ userTypeSelect.addEventListener("change", function () {
     brewMethodSelect.dispatchEvent(new Event("change"));
   }
 });
+
+// Show blend details input when blend is selected
+document.getElementById("origin").addEventListener("change", function() {
+  const blendSection = document.getElementById("blend-details-section");
+  if (this.value.startsWith("blend-")) {
+    blendSection.style.display = "block";
+  } else {
+    blendSection.style.display = "none";
+  }
+});
+
 
 // =====================================================
 // SMART BREW MAPPING TABLE
@@ -747,6 +816,76 @@ function persistLearningData() {
   localStorage.setItem(STORAGE_KEYS.learning, JSON.stringify(learningModel));
 }
 
+// =====================================================
+// PRIVACY & DATA SHARING CONSENT
+// =====================================================
+
+// User privacy preferences
+let privacyConsent = {
+  agreedToTerms: localStorage.getItem("agreedToTerms") === "true" || false,
+  dataSharing: localStorage.getItem("dataSharing") === "true" || false,
+  analytics: localStorage.getItem("analytics") === "true" || false,
+  consentDate: localStorage.getItem("consentDate") || null
+};
+
+function savePrivacyConsent(preferences) {
+  privacyConsent = {
+    ...privacyConsent,
+    ...preferences,
+    consentDate: new Date().toISOString()
+  };
+  
+  localStorage.setItem("agreedToTerms", privacyConsent.agreedToTerms);
+  localStorage.setItem("dataSharing", privacyConsent.dataSharing);
+  localStorage.setItem("analytics", privacyConsent.analytics);
+  localStorage.setItem("consentDate", privacyConsent.consentDate);
+}
+
+function checkPrivacyConsent() {
+  return privacyConsent.agreedToTerms;
+}
+
+function getUserDataSharingPreference() {
+  return privacyConsent.dataSharing;
+}
+
+// Anonymize brew data for sharing
+function anonymizeBrewData(brewEntry) {
+  return {
+    grinder: brewEntry.selections.grinder,
+    brewMethod: brewEntry.selections.brewMethod,
+    extractionState: brewEntry.extractionDiagnosis.extractionState,
+    confidence: brewEntry.extractionDiagnosis.confidence,
+    timestamp: brewEntry.timestamp
+    // NO personally identifiable information
+    // NO specific SCA scores (too identifiable)
+  };
+}
+
+// Send data to global model (placeholder for future server integration)
+function sendToGlobalModel(anonymizedData) {
+  // Only send if user has consented AND is Pro/Farmer tier
+  if (!getUserDataSharingPreference()) {
+    return;
+  }
+  
+  if (userAccessLevel === "free") {
+    console.log("Data sharing available for Pro/Farmer users only");
+    return;
+  }
+  
+  // TODO: Send to server when backend is ready
+  console.log("Would send to global model:", anonymizedData);
+  
+  // Example future implementation:
+  // fetch("/api/contribute-data", {
+  //   method: "POST",
+  //   headers: { "Content-Type": "application/json" },
+  //   body: JSON.stringify(anonymizedData)
+  // });
+}
+
+  
 // =====================================================
 // LEARNING RESET & CONTROL
 // =====================================================
